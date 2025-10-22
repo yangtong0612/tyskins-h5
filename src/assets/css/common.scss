@@ -1,0 +1,222 @@
+@import "./qui.scss";
+
+:root {
+  --animate-duration: 1s;
+  --animate-delay: 1s;
+  --animate-repeat: 1;
+  --el-color-primary: #f3a45d;
+  --el-pagination-button-bg-color: red
+}
+
+.bigbg {
+	background-size: 100%;
+	background-repeat: repeat-y;
+	min-height: 1200px;
+}
+.cursor{
+	cursor: pointer;
+}
+.v-selection-control--focused{
+	border: 1px saddlebrown solid;
+}
+a{
+	text-decoration: none;
+}
+
+
+.type-toggle{
+		border-radius: 2px;
+		.v-btn--selected.radiobtn{
+			position: relative;
+			border: 1px solid #f8bc76 !important;
+			&::before{
+				position: absolute;
+				right: 0;
+				top: 0;
+				content: "";	
+				width: 22px;
+				height: 15px;
+				background: url('@/assets/img/bos/selectedok.png');
+				background-size: 100% 100%;
+			}
+		}
+		span{
+			color: #99A5B7;
+		}
+		.v-btn__overlay {
+			background-color: #ffffff;
+		}
+}
+.toptabs{
+	.v-tab__slider{
+		width: 40px;
+		transform: translate(-50%,);
+		left: 50%;
+		bottom: 10px;
+	}
+}
+
+.v-window__right{
+   opacity: 0.4;
+}
+.v-window__left{
+   opacity: 0.4;
+}
+.v-container{
+	padding: 0;
+}
+
+.v-btn{
+	border-radius: 2px;
+}
+
+@media (max-width: 1279.98px) {
+.v-tabs.v-slide-group--is-overflowing:not(.v-slide-group--has-affixes) .v-tab:first-child {
+    margin-inline-start: 0px;
+}
+}
+
+
+@media screen and (max-width: 600px) { 
+		.q-row--dense {
+			padding: 14px;
+		}
+		.q-row--dense.v-row{
+			margin:  -8px;
+		}
+       .q-row--dense > [class*=v-col-] {
+           padding: 7px;
+       }
+	   .v-dialog .v-overlay__content {
+	       margin: 0px;
+	   }
+	   .bigbg{
+		   min-height: 200px;
+	   }
+	   .custom-message-box{
+		   width: 100% !important;
+	   }
+	   .battle-detail .el-loading-mask{
+		   background-color:rgba(255,255,255,0)
+	   }
+}
+
+.v-btn--size-default{
+	min-width: 40px !important;
+}
+.q-v-container{
+	padding: 8px !important;
+}
+.v-dialog .v-overlay__content{
+	// width: 100%;
+	align-items: center;
+}
+.history-table {
+	background-color: rgba(255,255,255,0) !important;
+}
+.history-table  tr{
+	background-color: rgba(255,255,255,0) !important;
+}
+.history-table.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell{
+	background-color: #1c1c25 !important;
+}
+.history-table.el-table th.el-table__cell{
+	font-size: 12px !important;
+}
+.el-table thead{
+	color: #282828;
+}
+
+.vertical-tabs .v-tab--selected .v-tab__slider{
+	opacity: 0;
+}
+
+.el-input__wrapper{
+	border-radius: 2px;
+}
+
+.popup_bg01 {
+	border: 1px solid #f8bc76;
+    background-image: url("@/assets/img/bos/popup_bg1.png");
+    background-size: 100% 100%;
+    .header {
+        color: #ffffff !important;
+    }
+}
+.popup_bg02 {
+	border: 1px solid #f8bc76;
+    background-image: url("@/assets/img/bos/popup_bg2.png");
+    background-size: 100% 100%;
+    .header {
+        color: #ffffff !important;
+    }
+}
+.popup_bg03 {
+	border: 1px solid #f8bc76;
+    background-image: url("@/assets/img/bos/popup_bg3.png");
+    background-size: 100% 100%;
+    .header {
+        color: #ffffff !important;
+    }
+}
+
+.popup_bg04{
+	border: 1px solid #f8bc76;
+	background-image: url("@/assets/img/bos/popup_bg3.png");
+    background-size: 100% 100%;
+    .header {
+        color: #ffffff !important;
+    }
+}
+
+.el-loading-mask{
+	background-color: rgba(255,255,255,0);
+}
+.el-message-box{
+	border-radius: 2px;
+}
+.el-button {
+	border-radius: 2px;
+}
+
+
+.wd-mtitle {
+    
+    position: relative;
+    height: 28px;
+    border-bottom: 1px solid #f8bc76;
+	display: none;
+	
+    &::before {
+        width: 127px;
+        height: 28px;
+        content: '';
+        position: absolute;
+        background-image: url('@/assets/img/bos/wdkctit.png');
+        background-size: 100% 100%;
+    }
+
+    span {
+        position: absolute;
+        display: inline-block;
+        width: 90px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        font-size: 14px;
+        color: #ffffff;
+        font-weight: bold;
+    }
+	.desc{
+		position: absolute;
+		right: 0;
+		height: 28px;
+		line-height: 28px;
+	}
+}
+
+@media screen and (max-width: 768px) {
+    .wd-mtitle {
+        display: flex;
+    }
+}

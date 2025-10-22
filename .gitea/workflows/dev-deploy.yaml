@@ -1,0 +1,42 @@
+name: 部署ooskins生产环境
+on:
+  push:
+    branches:
+      - ooskins
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      RUNNER_TOOL_CACHE: /toolcache
+      APP_HOST: 'ooskins.com'
+    steps:
+      - name: Checkout Code
+        uses: https://git.cxtech.cc/actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: https://git.cxtech.cc/actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+          token: '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'
+
+      - name: Install Dependencies
+        run: |
+          yarn -v
+          yarn install
+
+      - name: Build
+        run: |
+          yarn build
+
+      - name: Deploy
+        uses: https://git.cxtech.cc/actions/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VS_HK_HOST  }}
+          username: root
+          password: ${{ secrets.VS_HK_PASSWORD }}
+          port: ${{ secrets.VS_HK_PORT}}
+          source: "dist/*"
+          target: "/www/wwwroot/${{ env.APP_HOST }}/h5/"
+          strip_components: 1
