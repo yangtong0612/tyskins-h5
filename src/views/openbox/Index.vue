@@ -36,7 +36,8 @@
 										:data-open="gameItem.length - idx === 10 ? 1 : 0" :data-id="item.item_id">
 										<div class="item-img casebox carousel-item" :class="'bg_' + (item.color ? item.color.slice(1) : 'bdc2c2')">
 											<div>
-												<img :src="item.image_url" />
+												<!-- <img :src="item.image_url" /> -->
+												<img referrerpolicy="no-referrer" :src="item.image_url">
 											</div>
 											<!-- <p class="line1 px-1">{{ item.item_name }}</p> -->
 										</div>

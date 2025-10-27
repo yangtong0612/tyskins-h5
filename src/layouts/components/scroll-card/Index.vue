@@ -13,7 +13,11 @@
           :class="`bg_${item.color ? item.color.slice(1) : 'B0C3D9'}`"
         ></div>
         <div class="card-image-box">
-          <img referrerpolicy="no-referrer" class="card-image" :src="item.image_url" />
+          <img
+            referrerpolicy="no-referrer"
+            class="card-image"
+            :src="item.image_url"
+          />
         </div>
         <p class="name">{{ item.item_name }}</p>
         <div class="card-reverse">
@@ -271,6 +275,7 @@ export default defineComponent({
         background-position: center center;
         position: relative;
         .card-image {
+          width: 90px;
           position: absolute;
           left: 50%;
           top: 50%;

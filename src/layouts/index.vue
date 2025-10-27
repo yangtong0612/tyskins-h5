@@ -1,30 +1,42 @@
 <template>
   <div :class="currentName == 'Home' ? 'homebg' : 'combg'">
     <div v-if="!isMobile">
-      <ScrollCard />
+      <!-- <ScrollCard /> -->
       <Header></Header>
     </div>
-    <div style="position: relative; z-index: 99;" v-else>
+    <div style="position: relative; z-index: 99" v-else>
       <Header></Header>
       <ScrollCard />
     </div>
-    
+
     <Sidebar></Sidebar>
     <!-- :class="{'layout-main': $route.path !== '/'}" -->
     <div class="layout-main">
       <div v-if="$route.name === 'Home'" class="carouse-box">
-        <el-carousel  v-if="banners.length" :height="isMobile ? '44vw' : '420px'"
-          indicator-position="" v-bind="$attrs" arrow="never">
-          <el-carousel-item v-for="item in banners" :key="item.id" @click="handleClickBanner(item)" class="banner-item">
+        <el-carousel
+          v-if="banners.length"
+          :height="isMobile ? '44vw' : '420px'"
+          indicator-position=""
+          v-bind="$attrs"
+          arrow="never"
+        >
+          <el-carousel-item
+            v-for="item in banners"
+            :key="item.id"
+            @click="handleClickBanner(item)"
+            class="banner-item"
+          >
             <!-- <div class="focus-text">
               <h1>{{ item.name }}</h1>
               <p>{{ item.descr }}</p>
             </div> -->
-            <div class="focus-pic"><img :src="processImageUrl(item.img)"></div>
+            <div class="focus-pic">
+              <img :src="processImageUrl(item.img)" />
+            </div>
           </el-carousel-item>
         </el-carousel>
       </div>
-      
+
       <router-view />
     </div>
     <UserDrawer></UserDrawer>
@@ -32,12 +44,18 @@
       <div class="v-container">
         <div class="d-flex footer-row">
           <div class="footer-left">
-            <div class="d-flex" style="align-items: center;">
+            <div class="d-flex" style="align-items: center">
               <!-- <img class="cursor mr-2" style="width: 40px;" src="@/assets/img/bos/o.png" alt=""> -->
-              <img class="footer-logo" src="@/assets/img/ooskins-logo.svg" alt="" />
+              <img
+                class="footer-logo"
+                src="@/assets/img/ooskins-logo.svg"
+                alt=""
+              />
             </div>
-            
-            <div class="fs14 mr-2 pc-copyright">Copyright © 2024.ooskins.com</div>
+
+            <div class="fs14 mr-2 pc-copyright">
+              Copyright © 2024.ooskins.com
+            </div>
           </div>
           <div>
             <div class="links">
@@ -47,37 +65,33 @@
               <router-link to="/service?type=3">关于我们</router-link>
             </div>
             <div class="pays mb_pays">
-              <img style="width: 37px;" src="@/assets/img/bos/yl.png" />
-              <img style="width: 60px;" src="@/assets/img/bos/visa.png" />
-              <img style="width: 27px;" src="@/assets/img/bos/wx.png" />
-              <img style="width: 27px;" src="@/assets/img/bos/zfb.png" />
+              <img style="width: 37px" src="@/assets/img/bos/yl.png" />
+              <img style="width: 60px" src="@/assets/img/bos/visa.png" />
+              <img style="width: 27px" src="@/assets/img/bos/wx.png" />
+              <img style="width: 27px" src="@/assets/img/bos/zfb.png" />
             </div>
             <div class="mb-copyright">Copyright © 2024.ooskins.com</div>
             <div class="copyright">
               <!-- <div class="fs14 mr-2" data-v-220c3afa="">Copyright © 2022.amgcsgo.com</div> -->
-             
             </div>
-
           </div>
           <div class="pays pc_pays">
-            <img style="width: 37px;" src="@/assets/img/bos/yl.png" />
-            <img style="width: 60px;" src="@/assets/img/bos/visa.png" />
-            <img style="width: 27px;" src="@/assets/img/bos/wx.png" />
-            <img style="width: 27px;" src="@/assets/img/bos/zfb.png" />
+            <img style="width: 37px" src="@/assets/img/bos/yl.png" />
+            <img style="width: 60px" src="@/assets/img/bos/visa.png" />
+            <img style="width: 27px" src="@/assets/img/bos/wx.png" />
+            <img style="width: 27px" src="@/assets/img/bos/zfb.png" />
           </div>
         </div>
       </div>
-       
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-
 import { ref, onMounted, computed, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import Header from "./components/Header.vue";
-import UserDrawer from '@/components/UserDrawer.vue'
+import UserDrawer from "@/components/UserDrawer.vue";
 import Sidebar from "./components/sidebar/Index.vue";
 import ScrollCard from "./components/scroll-card/Index.vue";
 import PublicService from "@/services/PublicService";
@@ -96,11 +110,11 @@ const handleClickBanner = (item) => {
     router.push(item.url);
   }
 };
-// 监听路由变化  
-const currentName = ref('Home');
+// 监听路由变化
+const currentName = ref("Home");
 watch(router.currentRoute, (newRouter) => {
-  // 在路由发生变化时执行相应的操作  
-  console.log('路由发生变化：', newRouter.name);
+  // 在路由发生变化时执行相应的操作
+  console.log("路由发生变化：", newRouter.name);
   currentName.value = newRouter.name;
 });
 onMounted(() => {
@@ -122,14 +136,13 @@ onMounted(() => {
   opacity: 1;
 }
 
-.carouse-box{
+.carouse-box {
   // border: 1px solid red;
   // background-image: url("@/assets/img/banner_background.jpg");
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center top;
 }
-
 
 .el-carousel__indicators {
   display: none;
@@ -138,13 +151,15 @@ onMounted(() => {
 }
 
 .el-carousel__indicators .el-carousel__button {
-  background-color: #94A0BC;
+  background-color: #94a0bc;
   width: 36px;
   height: 4px;
   transform: skewX(-20deg);
 }
 
-.el-carousel__indicators .el-carousel__indicator.is-active .el-carousel__button {
+.el-carousel__indicators
+  .el-carousel__indicator.is-active
+  .el-carousel__button {
   background-color: #f3a45d;
   width: 69px;
   height: 6px;
@@ -169,7 +184,7 @@ onMounted(() => {
   left: 50%;
   margin-left: -600px;
   padding-left: 80px;
-  color: #D3D4D6;
+  color: #d3d4d6;
   height: 380px;
   cursor: pointer;
   transform: translateX(-80px);
@@ -195,37 +210,36 @@ onMounted(() => {
 @keyframes leftIn {
   0% {
     transform: translateX(80px);
-    opacity: .5
+    opacity: 0.5;
   }
 
   100% {
     transform: translateX(0);
-    opacity: 1
+    opacity: 1;
   }
 }
-
 
 @keyframes rightIn {
   0% {
     transform: translateX(-80px);
-    opacity: .5
+    opacity: 0.5;
   }
 
   100% {
     transform: translateX(0);
-    opacity: 1
+    opacity: 1;
   }
 }
 
 @-webkit-keyframes rightIn {
   0% {
     -webkit-transform: translateX(-80px);
-    opacity: .5
+    opacity: 0.5;
   }
 
   100% {
     -webkit-transform: translateX(0);
-    opacity: 1
+    opacity: 1;
   }
 }
 
@@ -241,7 +255,9 @@ onMounted(() => {
       height: 2px;
     }
 
-    .el-carousel__indicators .el-carousel__indicator.is-active .el-carousel__button {
+    .el-carousel__indicators
+      .el-carousel__indicator.is-active
+      .el-carousel__button {
       width: 28px;
       height: 2px;
     }
@@ -260,7 +276,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  color: #757D88;
+  color: #757d88;
 }
 
 .homebg {
@@ -269,7 +285,6 @@ onMounted(() => {
   background-repeat: no-repeat;
   background-position: center 70px;
   background-color: #17171f;
-
 }
 
 .combg {
@@ -290,7 +305,7 @@ onMounted(() => {
   background-position: right top;
   color: #191a22;
   text-align: center;
-  &::after{
+  &::after {
     content: "";
     width: 400px;
     height: 300px;
@@ -314,7 +329,11 @@ onMounted(() => {
 }
 
 .links {
-  background: linear-gradient(260.7deg, rgba(26, 26, 32, .5) 19.27%, rgba(29, 29, 37, .5) 90.31%);
+  background: linear-gradient(
+    260.7deg,
+    rgba(26, 26, 32, 0.5) 19.27%,
+    rgba(29, 29, 37, 0.5) 90.31%
+  );
   padding: 10px;
   border-radius: 20px;
   text-align: center;
@@ -352,13 +371,11 @@ onMounted(() => {
   cursor: pointer;
   // transform: none !important;
   // border: 1px solid red;
-
 }
 
 .layout-main {
   // margin-top: 80px;
   position: relative;
-  
 }
 
 .mb-copyright {
@@ -408,7 +425,7 @@ onMounted(() => {
     color: #ffffff;
     padding-top: 20px;
     padding-bottom: 20px;
-    &::after{
+    &::after {
       display: none;
     }
   }
@@ -423,7 +440,6 @@ onMounted(() => {
     .pc-copyright {
       display: none;
     }
-
   }
 
   .mb-copyright {
@@ -444,7 +460,7 @@ onMounted(() => {
     margin-top: 20px;
     padding: 10px;
     margin-bottom: 15px;
-    a{
+    a {
       font-size: 12px;
     }
   }
@@ -460,19 +476,16 @@ onMounted(() => {
 }
 </style>
 
-
-
 <style lang="scss">
 .el-carousel__item.is-active {
   .focus-pic {
-    animation: leftIn .5s 0s ease-in-out 1 forwards;
-    -webkit-animation: leftIn .5s 0s ease-in-out 1 forwards
+    animation: leftIn 0.5s 0s ease-in-out 1 forwards;
+    -webkit-animation: leftIn 0.5s 0s ease-in-out 1 forwards;
   }
 
   .focus-text {
-    animation: rightIn .5s 0s ease-in-out 1 forwards;
-    -webkit-animation: rightIn .5s 0s ease-in-out 1 forwards;
+    animation: rightIn 0.5s 0s ease-in-out 1 forwards;
+    -webkit-animation: rightIn 0.5s 0s ease-in-out 1 forwards;
   }
-
 }
 </style>
