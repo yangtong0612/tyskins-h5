@@ -623,6 +623,15 @@ onMounted(() => {
 @media screen and (max-width: 768px) {
 	.myappbar {
 		height: 60px;
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 999;
+		background-color: rgba(23, 23, 31, 0.98);
+		backdrop-filter: blur(10px);
+		border-bottom: 1px solid rgba(243, 164, 93, 0.1);
+		padding-top: env(safe-area-inset-top);
 	}
 
 	.pc-header {
@@ -631,18 +640,34 @@ onMounted(() => {
 
 	.mobile-header {
 		height: 60px;
-		position: fixed;
+		position: relative;
 		display: flex !important;
 		align-items: center;
 		width: 100%;
 		flex: 1;
-		z-index: 9;
-		background-color: #17171f;
+		padding: 0 12px;
+		background-color: transparent;
 	}
 
 	.logoimg {
-		width: 124px;
-		margin-left: 10px;
+		width: 100px;
+		height: auto;
+		margin-left: 0;
+		max-height: 32px;
+	}
+
+	.login-btn-group {
+		width: auto !important;
+		min-width: 140px;
+		gap: 8px;
+
+		& > div {
+			height: 32px;
+			line-height: 32px;
+			font-size: 13px;
+			padding: 0 16px;
+			border-radius: 16px;
+		}
 	}
 }
 

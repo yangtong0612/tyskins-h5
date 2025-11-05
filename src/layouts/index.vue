@@ -1,17 +1,17 @@
 <template>
-  <div :class="currentName == 'Home' ? 'homebg' : 'combg'">
+  <div :class="currentName == 'Home' ? 'homebg' : 'combg'" class="main-wrapper">
     <div v-if="!isMobile">
       <!-- <ScrollCard /> -->
       <Header></Header>
     </div>
-    <div style="position: relative; z-index: 99" v-else>
+    <div v-else class="mobile-header-wrapper">
       <Header></Header>
       <ScrollCard />
     </div>
 
     <Sidebar></Sidebar>
     <!-- :class="{'layout-main': $route.path !== '/'}" -->
-    <div class="layout-main">
+    <div class="layout-main" :class="{ 'has-bottom-nav': isMobile }">
       <div v-if="$route.name === 'Home'" class="carouse-box">
         <el-carousel
           v-if="banners.length"
@@ -40,7 +40,8 @@
       <router-view />
     </div>
     <UserDrawer></UserDrawer>
-    <div class="footerbg">
+    <BottomNavigation v-if="isMobile"></BottomNavigation>
+    <div class="footerbg" v-if="!isMobile">
       <div class="v-container">
         <div class="d-flex footer-row">
           <div class="footer-left">
@@ -94,6 +95,7 @@ import Header from "./components/Header.vue";
 import UserDrawer from "@/components/UserDrawer.vue";
 import Sidebar from "./components/sidebar/Index.vue";
 import ScrollCard from "./components/scroll-card/Index.vue";
+import BottomNavigation from "./components/BottomNavigation.vue";
 import PublicService from "@/services/PublicService";
 import { processImageUrl } from "@/utils";
 import { Banner } from "@/types";
@@ -376,6 +378,24 @@ onMounted(() => {
 .layout-main {
   // margin-top: 80px;
   position: relative;
+  
+  &.has-bottom-nav {
+    padding-bottom: 60px;
+    
+    @media screen and (max-width: 480px) {
+      padding-bottom: 56px;
+    }
+  }
+}
+
+.main-wrapper {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+.mobile-header-wrapper {
+  position: relative;
+  z-index: 99;
 }
 
 .mb-copyright {

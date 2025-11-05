@@ -97,6 +97,23 @@ function commitUserToken(token) {
 }
 html,body{
 	background-color: #17171f;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	overflow-x: hidden;
+}
+
+// 移动端视口优化
+@supports (-webkit-touch-callout: none) {
+	/* iOS Safari */
+	html {
+		height: -webkit-fill-available;
+	}
+	
+	body {
+		min-height: -webkit-fill-available;
+	}
 }
 .el-table{
 	background-color: #17171f !important;
