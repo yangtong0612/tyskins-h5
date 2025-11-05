@@ -13,12 +13,27 @@
 				</div>
 				
 				<ul>
-
-					<li @click="handleClick(nav.path)" v-for="(nav, index) in links" :key="index">
-						<span class="text-white">{{ nav.name }}</span>
-					</li>
-
-
+					<template v-for="(nav, index) in links" :key="index">
+						<li v-if="!nav.hasDropdown && nav.path" @click="handleClick(nav.path)">
+							<span class="text-white">{{ nav.name }}</span>
+						</li>
+						<li v-else-if="nav.hasDropdown" class="has-children">
+							<div class="menu-parent" @click="toggleChildren(index)">
+								<span class="text-white">{{ nav.name }}</span>
+								<el-icon>
+									<ArrowDown v-if="!expandedItems.includes(index)" />
+									<ArrowUp v-else />
+								</el-icon>
+							</div>
+							<ul v-if="expandedItems.includes(index)" class="children-menu">
+								<li v-for="(child, childIndex) in nav.children" :key="childIndex" @click="handleClick(child.path)">
+									<span class="text-white">{{ child.name }}</span>
+									<span v-if="child.badge === 'HOT'" class="menu-badge badge-hot">HOT</span>
+									<span v-else-if="child.badge === 'NEW'" class="menu-badge badge-new">NEW</span>
+								</li>
+							</ul>
+						</li>
+					</template>
 				</ul>
 			</div>
 			
@@ -46,6 +61,7 @@ import {
 	UserService
 } from "@/services/UserService";
 import { emitter } from "@/libs";
+import { ArrowDown, ArrowUp } from '@element-plus/icons-vue';
 import logo from '@/assets/img/ooskins-logo.svg'
 const store = useStore();
 const router = useRouter();
@@ -53,6 +69,7 @@ const navList2 = ref(navList);
 const emit = defineEmits(["login", "logout", "close", 'cz'])
 const drawer = ref(false)
 const direction = ref('ltr')
+const expandedItems = ref<number[]>([])
 defineProps({
 	links: {
 		type: Array,
@@ -71,8 +88,18 @@ function openCz() {
 	close()
 }
 function handleClick(path: string) {
+	if (!path) return;
 	router.push(path);
 	handleClose()
+}
+
+function toggleChildren(index: number) {
+	const idx = expandedItems.value.indexOf(index);
+	if (idx > -1) {
+		expandedItems.value.splice(idx, 1);
+	} else {
+		expandedItems.value.push(index);
+	}
 }
 
 function handleLogin() {
@@ -168,7 +195,51 @@ li {
 
 		&:first-child {
 			border-top: 1px solid rgba(0, 0, 0, 0.03);
-			;
+		}
+
+		&.has-children {
+			flex-direction: column;
+			align-items: stretch;
+			height: auto;
+		}
+	}
+
+	.menu-parent {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		height: 50px;
+		cursor: pointer;
+	}
+
+	.children-menu {
+		width: 100%;
+		padding-left: 20px;
+		background-color: rgba(0, 0, 0, 0.2);
+
+		li {
+			font-size: 14px;
+			height: 45px;
+			justify-content: space-between;
+		}
+	}
+
+	.menu-badge {
+		padding: 2px 8px;
+		border-radius: 10px;
+		font-size: 10px;
+		font-weight: 700;
+		text-transform: uppercase;
+
+		&.badge-hot {
+			background-color: #ff4444;
+			color: #ffffff;
+		}
+
+		&.badge-new {
+			background-color: #4caf50;
+			color: #ffffff;
 		}
 	}
 

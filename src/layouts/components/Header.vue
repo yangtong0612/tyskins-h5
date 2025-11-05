@@ -10,11 +10,69 @@
 					<img class="logoimg cursor" :src="logo" alt="">
 				</div>
 				<div class="toptabs">
-					<!-- {{ links }}
-						{{ currentModule }} -->
-					<div class="nav-item" :class="{ active: currentModule === link.module }"
-						@click="navigateTo(link.path, link.module)" v-for="link in links" :key="link.name">
-						{{ link.name }}
+					<div 
+						v-for="link in links" 
+						:key="link.name"
+						class="nav-item-wrapper"
+						:class="{ 'has-dropdown': link.hasDropdown }"
+						@mouseenter="link.hasDropdown ? showDropdown(link.module) : null"
+						@mouseleave="link.hasDropdown ? hideDropdown() : null"
+					>
+						<div 
+							class="nav-item" 
+							:class="{ 
+								active: currentModule === link.module || 
+									(link.hasDropdown && activeDropdown === link.module) ||
+									(link.hasDropdown && isGameChildActive(link)),
+								'has-chevron': link.hasDropdown
+							}"
+							@click="!link.hasDropdown && navigateTo(link.path, link.module)"
+						>
+							<svg v-if="link.name === 'Games'" class="nav-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+								<path d="M2 4h3v2H2V4zm9 0h3v2h-3V4zM2 10h3v2H2v-2zm9 0h3v2h-3v-2zM6 6h4v4H6V6z" fill="currentColor" stroke="currentColor" stroke-width="0.5"/>
+							</svg>
+							<svg v-else-if="link.icon === 'gift'" class="nav-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+								<path d="M8 0L6 2H2v2h2v8h8V4h2V2h-4L8 0zm0 4h2v2H8V4zm-4 2h8v6H4V6z" fill="currentColor"/>
+							</svg>
+							<svg v-else-if="link.icon === 'trophy'" class="nav-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+								<path d="M8 0l2 4h4v2a2 2 0 01-2 2h-2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8H2a2 2 0 01-2-2V4h4l2-4z" fill="currentColor"/>
+							</svg>
+							<span>{{ link.name }}</span>
+							<svg v-if="link.hasDropdown" class="chevron-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
+								<path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="2" fill="none"/>
+							</svg>
+						</div>
+						<!-- 下拉菜单 -->
+						<div 
+							v-if="link.hasDropdown && link.children && activeDropdown === link.module" 
+							class="dropdown-menu-nav"
+						>
+							<div 
+								v-for="child in link.children" 
+								:key="child.path"
+								class="dropdown-item"
+								:class="{ active: currentModule === child.module }"
+								@click="navigateTo(child.path, child.module)"
+							>
+								<div class="dropdown-item-icon">
+									<svg v-if="child.icon === 'star'" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+										<path d="M10 0l2.5 6.5L20 7.5l-5 4.5 1.5 7L10 15l-6.5 4.5L5 12l-5-4.5L7.5 6.5 10 0z"/>
+									</svg>
+									<svg v-else-if="child.icon === 'sword'" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+										<path d="M2 2l2 2v12l-2 2h2l2-2V4l-2-2H2zm16 0l-2 2v12l2 2h-2l-2-2V4l2-2h2z"/>
+									</svg>
+									<svg v-else-if="child.icon === 'box'" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+										<path d="M2 2h16v16H2V2zm2 2v12h12V4H4z"/>
+									</svg>
+									<svg v-else-if="child.icon === 'grid'" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+										<path d="M2 2h6v6H2V2zm0 8h6v6H2v-6zm8-8h6v6h-6V2zm0 8h6v6h-6v-6z"/>
+									</svg>
+								</div>
+								<span class="dropdown-item-text">{{ child.name }}</span>
+								<span v-if="child.badge === 'HOT'" class="dropdown-badge badge-hot">HOT</span>
+								<span v-else-if="child.badge === 'NEW'" class="dropdown-badge badge-new">NEW</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -210,12 +268,28 @@ console.log('router', router.currentRoute?.value?.meta?.module)
 const state = reactive({
 	links: navList,
 	currentModule: router.currentRoute?.value?.meta?.module || "home",
+	activeDropdown: null as string | null,
 });
 
-const { currentModule, links } = toRefs(state)
+const { currentModule, links, activeDropdown } = toRefs(state)
+
+function showDropdown(module: string) {
+	state.activeDropdown = module;
+}
+
+function hideDropdown() {
+	state.activeDropdown = null;
+}
+
+function isGameChildActive(link: any): boolean {
+	if (!link.hasDropdown || !link.children) return false;
+	return link.children.some((child: any) => child.module === state.currentModule);
+}
+
 function navigateTo(path: string, module: string) {
 	if (module === "" || path === "") return;
 	state.currentModule = module;
+	state.activeDropdown = null; // 关闭下拉菜单
 	router.push(path);
 }
 
@@ -288,6 +362,16 @@ watch(router.currentRoute, (newRouter) => {
 	// 在路由发生变化时执行相应的操作  
 	console.log('路由发生变化：', newRouter.name);
 	currentName.value = newRouter.name;
+	// 更新当前模块
+	state.currentModule = newRouter.meta?.module || "home";
+	
+	// 检查是否是Games子项
+	if (state.currentModule !== 'home' && state.currentModule !== 'games') {
+		const gameLink = state.links.find(link => link.hasDropdown && link.children?.some(child => child.module === state.currentModule));
+		if (gameLink) {
+			// 当前模块是Games的子项，保持Games活跃状态
+		}
+	}
 });
 
 watch(
@@ -302,6 +386,7 @@ watch(
 
 onMounted(() => {
 	currentName.value = route.name;
+	state.currentModule = route.meta?.module || "home";
 	onResize();
 	window.addEventListener('resize', onResize, { passive: true });
 })
@@ -345,25 +430,129 @@ onMounted(() => {
 	position: relative;
 	display: flex;
 	align-items: center;
+}
 
-	.nav-item {
-		min-width: 94px;
-		;
-		height: 80px;
-		padding: 0 15px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 14px;
-		font-weight: bold;
-		cursor: pointer;
-		position: relative;
-		border-right: 1px solid #242631;
+.nav-item-wrapper {
+	position: relative;
 
-		&:hover,
-		&.active {
-			color: #ffcd7f;
+	&.has-dropdown {
+		.nav-item {
+			cursor: pointer;
 		}
+	}
+}
+
+.nav-item {
+	min-width: 94px;
+	height: 80px;
+	padding: 0 15px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	position: relative;
+	border-right: 1px solid #242631;
+	transition: all 0.3s ease;
+
+	.nav-icon {
+		width: 16px;
+		height: 16px;
+		flex-shrink: 0;
+	}
+
+	.chevron-icon {
+		width: 12px;
+		height: 12px;
+		flex-shrink: 0;
+		transition: transform 0.3s ease;
+	}
+
+	&.has-chevron {
+		&.active .chevron-icon,
+		&:hover .chevron-icon {
+			transform: rotate(180deg);
+		}
+	}
+
+	&:hover,
+	&.active {
+		color: #ffcd7f;
+		background-color: rgba(243, 164, 93, 0.1);
+	}
+}
+
+// 下拉菜单样式
+.dropdown-menu-nav {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	background: linear-gradient(135deg, rgba(26, 26, 32, 0.98) 0%, rgba(29, 29, 37, 0.98) 100%);
+	border: 1px solid rgba(243, 164, 93, 0.3);
+	border-radius: 12px;
+	padding: 8px;
+	min-width: 200px;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	margin-top: 4px;
+	backdrop-filter: blur(10px);
+}
+
+.dropdown-item {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 16px;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	color: #99a5b7;
+	font-size: 14px;
+	font-weight: 500;
+
+	&:hover {
+		background-color: rgba(243, 164, 93, 0.15);
+		color: #ffcd7f;
+	}
+
+	&.active {
+		background-color: rgba(243, 164, 93, 0.2);
+		color: #ffcd7f;
+	}
+}
+
+.dropdown-item-icon {
+	width: 20px;
+	height: 20px;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: currentColor;
+}
+
+.dropdown-item-text {
+	flex: 1;
+}
+
+.dropdown-badge {
+	padding: 2px 8px;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+
+	&.badge-hot {
+		background-color: #ff4444;
+		color: #ffffff;
+	}
+
+	&.badge-new {
+		background-color: #4caf50;
+		color: #ffffff;
 	}
 }
 
