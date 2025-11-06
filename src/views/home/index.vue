@@ -14,6 +14,75 @@
 			</v-container>
 		</section>
 
+		<!-- 商品过滤栏 -->
+		<section class="filter-section">
+			<v-container>
+				<!-- Filter Buttons -->
+				<div class="filter-buttons">
+					<button 
+						v-for="filter in filters" 
+						:key="filter.value"
+						class="filter-btn"
+						:class="{ active: activeFilter === filter.value }"
+						@click="setActiveFilter(filter.value)"
+					>
+						<span class="filter-label">{{ filter.label }}</span>
+						<span v-if="filter.badge" class="filter-badge">{{ filter.badge }}</span>
+					</button>
+				</div>
+
+				<!-- Controls Row -->
+				<div class="controls-row">
+					<!-- Price Range -->
+					<div class="price-range">
+						<img class="coin-icon" src="@/assets/img/bos/douzi.svg" alt="">
+						<span class="price-value">{{ formatPrice(priceRange[0]) }}</span>
+						<el-slider
+							v-model="priceRange"
+							:min="0"
+							:max="maxPrice"
+							:step="100"
+							range
+							class="price-slider"
+							@change="handlePriceChange"
+						/>
+						<img class="coin-icon" src="@/assets/img/bos/douzi.svg" alt="">
+						<span class="price-value">{{ formatPrice(priceRange[1]) }}</span>
+					</div>
+
+					<!-- Sort Dropdown -->
+					<div class="sort-dropdown">
+						<el-select 
+							v-model="sortBy" 
+							placeholder="排序方式: 价格降序"
+							class="sort-select"
+							@change="handleSortChange"
+						>
+							<el-option label="价格降序" value="price_desc" />
+							<el-option label="价格升序" value="price_asc" />
+							<el-option label="名称A-Z" value="name_asc" />
+							<el-option label="名称Z-A" value="name_desc" />
+						</el-select>
+					</div>
+
+					<!-- Search -->
+					<div class="search-box">
+						<el-input
+							v-model="searchKeyword"
+							placeholder="搜索案例......"
+							class="search-input"
+							@keyup.enter="handleSearch"
+							clearable
+						>
+							<template #prefix>
+								<el-icon><Search /></el-icon>
+							</template>
+						</el-input>
+					</div>
+				</div>
+			</v-container>
+		</section>
+
 		<section v-if="rechargeWelfareboxList.length" class="section section_top" data-myName="section_top">
 			<v-container>
 				<div>
@@ -45,7 +114,7 @@
 				<div :id="'tab' + index">
 					<q-title :title="type?.name" :class="index % 2 == 0 ? 'bg2' : 'bg1'"></q-title>
 					<v-row class="mt-8 q-row--dense" v-if="boxListData">
-						<v-col v-for="(item, i) in boxListData[type?.id]" :key="item.id" cols="6" lg="3" md="3">
+						<v-col v-for="(item, i) in getFilteredBoxList(boxListData[type?.id])" :key="item.id" cols="6" lg="3" md="3">
 							<box-item :item="item"></box-item>
 						</v-col>
 					</v-row>
@@ -58,7 +127,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref, toRefs, computed, nextTick } from "vue";
+import { onMounted, reactive, ref, toRefs, computed, nextTick, watch } from "vue";
 import PublicService from "@/services/PublicService";
 import QTitle from '@/components/QTitle.vue'
 import BoxItem from '@/components/BoxItem.vue'
@@ -69,6 +138,7 @@ import { openLink } from "@/utils";
 import { processImageUrl } from '@/utils';
 import Login from "@/components/Login.vue";
 import _ from "lodash";
+import { Search } from '@element-plus/icons-vue';
 const store = useStore()
 store.dispatch("getRechargeWelfareBoxTypeId")
 
@@ -90,9 +160,28 @@ const state = reactive({
 	recharge_welfare_box_type_id: computed(() => store.getters.rechargeWelfareBoxTypeId),
 	rechargeWelfareboxList: [],
 	types: [],
-	refList: [] as Array<any>
+	refList: [] as Array<any>,
+	// 过滤相关
+	filters: [
+		{ label: '官方的', value: 'official', badge: null },
+		{ label: '社区', value: 'community', badge: null },
+		{ label: '收藏夹', value: 'favorites', badge: null },
+		{ label: '麒麟工会', value: 'qilin', badge: null },
+		{ label: '猩红潮汐', value: 'crimson', badge: '血压' },
+		{ label: '终焉之门', value: 'final', badge: '一九' },
+		{ label: '追逐黎明', value: 'dawn', badge: '三七' },
+		{ label: '命运之锁', value: 'destiny', badge: '四六、保底' },
+		{ label: '低风险', value: 'low_risk', badge: null },
+		{ label: '中等风险', value: 'medium_risk', badge: null },
+		{ label: '高风险', value: 'high_risk', badge: null }
+	],
+	activeFilter: 'official',
+	priceRange: [0, 10000],
+	maxPrice: 10000,
+	sortBy: 'price_desc',
+	searchKeyword: ''
 });
-const { boxListData, rechargeWelfareboxList, types, keyBoxList } = toRefs(state);
+const { boxListData, rechargeWelfareboxList, types, keyBoxList, filters, activeFilter, priceRange, maxPrice, sortBy, searchKeyword } = toRefs(state);
 const tabs = ref([
 	// '最新盲盒',
 	// '尝鲜推荐',
@@ -208,6 +297,70 @@ async function getRechargeWelfareBoxList() {
 	const { data: { list } } = resp.data
 	state.rechargeWelfareboxList = list
 }
+
+// 过滤相关方法
+const setActiveFilter = (value: string) => {
+	state.activeFilter = value;
+};
+
+const formatPrice = (price: number) => {
+	return price.toLocaleString('en-US');
+};
+
+const handlePriceChange = () => {
+	// 价格范围变化时的处理
+};
+
+const handleSortChange = () => {
+	// 排序变化时的处理
+};
+
+const handleSearch = () => {
+	// 搜索处理
+};
+
+// 获取过滤后的商品列表
+const getFilteredBoxList = (list: any[]) => {
+	if (!list || !Array.isArray(list)) return [];
+	
+	let filtered = [...list];
+	
+	// 根据搜索关键词过滤
+	if (state.searchKeyword) {
+		const keyword = state.searchKeyword.toLowerCase();
+		filtered = filtered.filter(item => 
+			(item.name && item.name.toLowerCase().includes(keyword)) ||
+			(item.box_name && item.box_name.toLowerCase().includes(keyword))
+		);
+	}
+	
+	// 根据价格范围过滤
+	filtered = filtered.filter(item => {
+		const price = item.price || 0;
+		return price >= state.priceRange[0] && price <= state.priceRange[1];
+	});
+	
+	// 根据排序方式排序
+	if (state.sortBy === 'price_desc') {
+		filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+	} else if (state.sortBy === 'price_asc') {
+		filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+	} else if (state.sortBy === 'name_asc') {
+		filtered.sort((a, b) => {
+			const nameA = (a.name || a.box_name || '').toLowerCase();
+			const nameB = (b.name || b.box_name || '').toLowerCase();
+			return nameA.localeCompare(nameB);
+		});
+	} else if (state.sortBy === 'name_desc') {
+		filtered.sort((a, b) => {
+			const nameA = (a.name || a.box_name || '').toLowerCase();
+			const nameB = (b.name || b.box_name || '').toLowerCase();
+			return nameB.localeCompare(nameA);
+		});
+	}
+	
+	return filtered;
+};
 
 onMounted(async () => {
 	await getKeyBoxList();
@@ -392,6 +545,202 @@ function scrollTopAnimate(id) {
 	.v-col-lg-3 {
 		flex: 0 0 20%;
 		max-width: 20%;
+	}
+}
+
+// 过滤栏样式
+.filter-section {
+	padding: 30px 0;
+	background: rgba(23, 23, 31, 0.8);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filter-buttons {
+	display: flex;
+	gap: 12px;
+	margin-bottom: 24px;
+	flex-wrap: wrap;
+}
+
+.filter-btn {
+	padding: 10px 18px;
+	background: rgba(23, 23, 31, 0.8);
+	border: none;
+	border-radius: 8px;
+	color: rgba(153, 165, 183, 0.8);
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	white-space: nowrap;
+	position: relative;
+
+	&:hover {
+		background: rgba(26, 26, 32, 0.9);
+		color: rgba(255, 255, 255, 0.9);
+	}
+
+	&.active {
+		background: rgba(255, 255, 255, 0.12);
+		color: #ffffff;
+	}
+
+	.filter-label {
+		font-weight: 500;
+	}
+
+	.filter-badge {
+		background: rgba(243, 164, 93, 0.25);
+		color: #f3a45d;
+		padding: 2px 8px;
+		border-radius: 4px;
+		font-size: 11px;
+		font-weight: 600;
+		margin-left: 4px;
+		line-height: 1.2;
+	}
+
+	&.active .filter-badge {
+		background: rgba(243, 164, 93, 0.35);
+		color: #ffcd7f;
+	}
+}
+
+.controls-row {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	flex-wrap: wrap;
+}
+
+.price-range {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex: 1;
+	min-width: 300px;
+
+	.coin-icon {
+		width: 16px;
+		height: 16px;
+		flex-shrink: 0;
+	}
+
+	.price-value {
+		color: #ffffff;
+		font-size: 14px;
+		font-weight: 500;
+		min-width: 60px;
+		text-align: right;
+	}
+
+	.price-slider {
+		flex: 1;
+		margin: 0 10px;
+	}
+}
+
+.sort-dropdown {
+	min-width: 180px;
+
+	:deep(.el-select) {
+		width: 100%;
+	}
+
+	:deep(.el-input__wrapper) {
+		background: rgba(23, 23, 31, 0.8);
+		border: 1px solid rgba(243, 164, 93, 0.2);
+		border-radius: 8px;
+		box-shadow: none;
+
+		&:hover {
+			border-color: rgba(243, 164, 93, 0.4);
+		}
+
+		.el-input__inner {
+			color: #ffffff;
+			font-size: 14px;
+		}
+	}
+
+	:deep(.el-select__caret) {
+		color: #ffffff;
+	}
+}
+
+.search-box {
+	min-width: 200px;
+	flex: 0 0 250px;
+
+	:deep(.el-input__wrapper) {
+		background: rgba(23, 23, 31, 0.8);
+		border: 1px solid rgba(243, 164, 93, 0.2);
+		border-radius: 8px;
+		box-shadow: none;
+
+		&:hover {
+			border-color: rgba(243, 164, 93, 0.4);
+		}
+
+		.el-input__inner {
+			color: #ffffff;
+			font-size: 14px;
+
+			&::placeholder {
+				color: rgba(153, 165, 183, 0.6);
+			}
+		}
+	}
+
+	:deep(.el-icon) {
+		color: rgba(153, 165, 183, 0.8);
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.filter-section {
+		padding: 20px 0;
+	}
+
+	.filter-buttons {
+		gap: 8px;
+		margin-bottom: 16px;
+	}
+
+	.filter-btn {
+		padding: 8px 14px;
+		font-size: 12px;
+	}
+
+	.controls-row {
+		flex-direction: column;
+		gap: 16px;
+		align-items: stretch;
+	}
+
+	.price-range {
+		min-width: 100%;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 8px;
+
+		.price-value {
+			text-align: left;
+			min-width: auto;
+		}
+
+		.price-slider {
+			margin: 0;
+		}
+	}
+
+	.sort-dropdown,
+	.search-box {
+		min-width: 100%;
+		flex: 1;
 	}
 }
 </style>
