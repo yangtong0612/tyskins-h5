@@ -658,15 +658,63 @@ onMounted(() => {
 
 	.login-btn-group {
 		width: auto !important;
-		min-width: 140px;
 		gap: 8px;
+		display: flex;
+		align-items: center;
 
 		& > div {
+			width: 32px;
 			height: 32px;
-			line-height: 32px;
-			font-size: 13px;
-			padding: 0 16px;
-			border-radius: 16px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 12px;
+			border-radius: 8px;
+			font-weight: 600;
+			position: relative;
+			flex-shrink: 0;
+			transition: all 0.2s ease;
+
+			&:first-child {
+				// 登录按钮 - 深灰色扁平样式
+				background-color: rgba(75, 76, 82, 0.8);
+				color: #99a5b7;
+				border: none;
+
+				&:hover {
+					background-color: rgba(75, 76, 82, 1);
+					color: #ffffff;
+				}
+			}
+
+			&:last-child {
+				// 注册按钮 - 橙色3D效果样式
+				background: linear-gradient(180deg, #f3a45d 0%, #e6944d 100%);
+				color: #503d2e;
+				box-shadow: 0 2px 6px rgba(243, 164, 93, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+				
+				&::before {
+					content: '';
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					height: 40%;
+					background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
+					border-radius: 8px 8px 0 0;
+					pointer-events: none;
+				}
+
+				&:hover {
+					box-shadow: 0 3px 8px rgba(243, 164, 93, 0.5), 0 2px 3px rgba(0, 0, 0, 0.3);
+					transform: translateY(-1px);
+				}
+
+				&:active {
+					transform: translateY(0);
+					box-shadow: 0 1px 3px rgba(243, 164, 93, 0.3), 0 1px 1px rgba(0, 0, 0, 0.2);
+				}
+			}
 		}
 	}
 }
@@ -684,22 +732,66 @@ onMounted(() => {
 
 .login-btn-group {
 	border-radius: 20px;
-	overflow: hidden;
-	width: 100px;
+	overflow: visible;
+	width: auto;
 	display: flex;
+	gap: 10px;
+	align-items: center;
 
 	&>div {
 		cursor: pointer;
-		flex: 1;
+		width: 30px;
 		height: 30px;
-		line-height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		text-align: center;
 		font-size: 12px;
-		background-color: #f3a55e;
-		color: #503d2e;
+		font-weight: 600;
+		border-radius: 8px;
+		position: relative;
+		transition: all 0.2s ease;
+		flex-shrink: 0;
+
+		&:first-child {
+			// 登录按钮 - 深灰色扁平样式
+			background-color: rgba(75, 76, 82, 0.8);
+			color: #99a5b7;
+			border: none;
+
+			&:hover {
+				background-color: rgba(75, 76, 82, 1);
+				color: #ffffff;
+			}
+		}
 
 		&:last-child {
-			border-left: 1px solid rgba(255, 255, 255, 0.1);
+			// 注册按钮 - 橙色3D效果样式
+			background: linear-gradient(180deg, #f3a45d 0%, #e6944d 100%);
+			color: #503d2e;
+			box-shadow: 0 2px 6px rgba(243, 164, 93, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+			
+			&::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 40%;
+				background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
+				border-radius: 8px 8px 0 0;
+				pointer-events: none;
+			}
+
+			&:hover {
+				box-shadow: 0 3px 8px rgba(243, 164, 93, 0.5), 0 2px 3px rgba(0, 0, 0, 0.3);
+				transform: translateY(-1px);
+			}
+
+			&:active {
+				transform: translateY(0);
+				box-shadow: 0 1px 3px rgba(243, 164, 93, 0.3), 0 1px 1px rgba(0, 0, 0, 0.2);
+			}
 		}
 	}
 }

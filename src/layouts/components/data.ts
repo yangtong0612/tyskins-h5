@@ -5,7 +5,7 @@ const navList = [
 		module: 'home',
 	},
 	{
-		name: 'Games',
+		name: '游戏',
 		module: 'games',
 		hasDropdown: true,
 		children: [
@@ -40,17 +40,17 @@ const navList = [
 		],
 	},
 	{
-		name: 'Rewards',
-		path: '/grade-reward',
-		module: 'gradeReward',
-		icon: 'gift',
+		name: '每日任务',
+		path: '/task',
+		module: 'task',
+		// icon: 'gift',
 	},
-	{
-		name: 'Leaderboard',
-		path: '/battle',
-		module: 'battle',
-		icon: 'trophy',
-	},
+	// {
+	// 	name: '每日任务',
+	// 	path: '/battle',
+	// 	module: 'battle',
+	// 	icon: 'trophy',
+	// },
 	{
 		name: '商城',
 		path: '/mall',
@@ -61,16 +61,16 @@ const navList = [
 		path: '/promote',
 		module: 'promote',
 	},
-	{
-		name: '每日签到',
-		path: '/user/signin',
-		module: 'signin',
-	},
-	{
-		name: '每日任务',
-		path: '/task',
-		module: 'task',
-	},
+	// {
+	// 	name: '每日签到',
+	// 	path: '/user/signin',
+	// 	module: 'signin',
+	// },
+	// {
+	// 	name: '每日任务',
+	// 	path: '/task',
+	// 	module: 'task',
+	// },
 ]
 
 export { navList }

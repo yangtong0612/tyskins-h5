@@ -20,7 +20,16 @@ export class PromoteService {
 		})
 	}
 
-	static async receiveRebate(): Promise<IHttpResponse> {
-		return http('/api/promote/receiveRebate', { method: 'get' })
+	static async userDetail(params: {
+		page?: number,
+		page_size?: number,
+		keyword?: string,
+		start_date?: string,
+		end_date?: string
+	}): Promise<IHttpResponse> {
+		return http('/api/promote/userDetail', {
+			method: 'get',
+			params
+		})
 	}
 }

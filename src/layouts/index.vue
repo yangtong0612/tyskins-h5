@@ -37,6 +37,26 @@
         </el-carousel>
       </div>
 
+      <!-- 公告栏 - 放在轮播图下面 -->
+      <div v-if="$route.name === 'Home' && notice.length" class="notice-bar-wrap v-container">
+        <div v-if="!isMobile" class="notice-bar">
+          <img class="icon_laba" src="@/assets/img/bos/laba.png">
+          <el-carousel direction="vertical" arrow="never" style="flex: 1;" height="44px" indicator-position="none">
+            <el-carousel-item v-for="(item,index) in notice" :key="index">
+              <div class="line1 cursor">
+                <span>{{ item }}</span>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+        <div class="notice-bar" v-else>
+          <img class="icon_laba" src="@/assets/img/bos/laba.png">
+          <marquee>
+            <span v-for="(item,index) in notice" :key="index" style="cursor: pointer;" class="ml-3">{{ item }}</span>
+          </marquee>
+        </div>
+      </div>
+
       <router-view />
     </div>
     <UserDrawer></UserDrawer>
@@ -100,6 +120,7 @@ import PublicService from "@/services/PublicService";
 import { processImageUrl } from "@/utils";
 import { Banner } from "@/types";
 const banners = ref<Banner[]>([]);
+const notice = ref<string[]>([]);
 const isMobile = ref(false);
 const route = useRoute();
 const router = useRouter();
@@ -112,6 +133,20 @@ const handleClickBanner = (item) => {
     router.push(item.url);
   }
 };
+
+const getNotice = async () => {
+  PublicService.getNotice().then(res => {
+    let str = res.data.data.content;
+    if (!str) return;
+    let isWrap = /\n/.test(str);
+    if (!isWrap) {
+      notice.value = [str]
+    } else {
+      notice.value = str.split('\n');
+    }
+  })
+};
+
 // 监听路由变化
 const currentName = ref("Home");
 watch(router.currentRoute, (newRouter) => {
@@ -129,6 +164,8 @@ onMounted(() => {
     if (code !== 0) return;
     banners.value = data.list;
   });
+
+  getNotice();
 });
 </script>
 <style lang="scss">
@@ -144,6 +181,37 @@ onMounted(() => {
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center top;
+}
+
+.notice-bar-wrap {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.notice-bar {
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 44px;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(139, 92, 60, 0.8) 0%, rgba(107, 71, 46, 0.9) 100%);
+  border: 1px solid rgba(243, 164, 93, 0.3);
+  
+  .line1 {
+    line-height: 44px;
+  }
+
+  .icon_laba {
+    margin-right: 10px;
+    width: 25px;
+    height: 25px;
+    flex-shrink: 0;
+  }
 }
 
 .el-carousel__indicators {
@@ -438,6 +506,31 @@ onMounted(() => {
 
     p {
       font-size: 14px;
+    }
+  }
+
+  .notice-bar-wrap {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 0 15px;
+  }
+
+  .notice-bar {
+    height: 32px;
+    padding: 0 10px;
+    font-size: 12px;
+    line-height: 32px;
+    border-radius: 6px;
+
+    .icon_laba {
+      width: 14px;
+      height: 14px;
+    }
+
+    .line1 {
+      span {
+        font-size: 12px;
+      }
     }
   }
 
