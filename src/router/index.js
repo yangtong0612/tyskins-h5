@@ -148,6 +148,12 @@ const routes = [
 						component: () => import("@/views/user/mystock.vue"),
 					},
 					{
+						path: "cdk",
+						name: "Cdk",
+						meta: { title: "我的CDK" },
+						component: () => import("@/views/user/cdk.vue"),
+					},
+					{
 						path: "record",
 						name: "Record",
 						meta: { title: "历史记录" },

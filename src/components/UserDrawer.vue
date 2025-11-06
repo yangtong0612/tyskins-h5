@@ -61,15 +61,19 @@
                             <img style="width: 16px;" src="@/assets/img/bos/icon_001.png">
                             <span>我的库存</span>
                         </li>
-                        <li @click="goto('/user/record', 1)" :class="activeIndex == 1 ? 'active' : ''">
+                        <li @click="goto('/user/cdk', 1)" :class="activeIndex == 1 ? 'active' : ''">
+                            <img style="width: 18px;" src="@/assets/img/bos/icon_001.png">
+                            <span>我的CDK</span>
+                        </li>
+                        <li @click="goto('/user/record', 2)" :class="activeIndex == 2 ? 'active' : ''">
                             <img style="width: 12px;" src="@/assets/img/bos/icon_002.png">
                             <span>历史记录</span>
                         </li>
-                        <li @click="goto('/user/signin', 2)" :class="activeIndex == 2 ? 'active' : ''">
+                        <li @click="goto('/user/signin', 3)" :class="activeIndex == 3 ? 'active' : ''">
                             <img style="width: 14px;" src="@/assets/img/bos/icon_004.png">
                             <span>我的签到</span>
                         </li>
-                        <li @click="goto('/user/setting', 3)" :class="activeIndex == 3 ? 'active' : ''">
+                        <li @click="goto('/user/setting', 4)" :class="activeIndex == 4 ? 'active' : ''">
                             <img style="width: 15px;" src="@/assets/img/bos/icon_003.png">
                             <span>账号设置</span>
                         </li>
@@ -166,8 +170,19 @@ const router = useRouter();
 const route = useRoute();
 const activeIndex = ref(0);
 import { emitter } from "@/libs";
+import { watch } from "vue";
 const isMobile = computed(() => window.innerWidth < 600);
 const { sendPhoneCode, buttonText } = useCode();
+
+// 根据路由设置activeIndex
+watch(() => route.path, (path) => {
+    if (path === '/user/mystock') activeIndex.value = 0;
+    else if (path === '/user/cdk') activeIndex.value = 1;
+    else if (path === '/user/record') activeIndex.value = 2;
+    else if (path === '/user/signin') activeIndex.value = 3;
+    else if (path === '/user/setting') activeIndex.value = 4;
+}, { immediate: true });
+
 const goto = (url, index) => {
     activeIndex.value = index;
     router.push(url)

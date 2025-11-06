@@ -35,6 +35,10 @@
                                         <img style="width: 18px;" src="@/assets/img/bos/icon_001.png">
                                         <span>我的库存</span>
                                     </v-tab>
+                                    <v-tab to="/user/cdk">
+                                        <img style="width: 18px;" src="@/assets/img/bos/icon_001.png">
+                                        <span>我的CDK</span>
+                                    </v-tab>
                                     <v-tab to="/user/record">
                                         <img style="width: 12px;" src="@/assets/img/bos/icon_002.png">
                                         <span>历史记录</span>
@@ -301,7 +305,10 @@ const tabs = ref([
         name: "我的库存",
         url: "/user/mystock",
     },
-
+    {
+        name: "我的CDK",
+        url: "/user/cdk",
+    },
     {
         name: "历史记录",
         url: "/user/record",
