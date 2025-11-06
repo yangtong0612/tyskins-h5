@@ -3,10 +3,15 @@
     <div class="case-image-wrapper">
       <img 
         class="case-image" 
-        :src="item?.image_url || item?.box_img || item?.box_cover" 
+        :src="imageUrl" 
         alt=""
         referrerpolicy="no-referrer"
+        @error="handleImageError"
+        @load="handleImageLoad"
       />
+      <div v-if="imageLoading" class="image-loading">
+        <div class="loading-spinner"></div>
+      </div>
       <div class="chart-icon">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M2 12h12v2H2v-2zm2-4h8v2H4V8zm2-4h4v2H6V4z" fill="currentColor"/>
@@ -25,7 +30,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, computed, ref } from 'vue';
+import { processImageUrl } from '@/utils';
 
 const props = defineProps({
   item: {
@@ -36,8 +42,47 @@ const props = defineProps({
 
 const emit = defineEmits(['buy', 'click']);
 
+const imageLoading = ref(true);
+const imageError = ref(false);
+
+// 获取图片URL，按优先级处理
+const imageUrl = computed(() => {
+  const item = props.item;
+  // 按优先级尝试不同的图片字段
+  const image = item?.cover || 
+               item?.box_cover || 
+               item?.img || 
+               item?.box_img || 
+               item?.image_url || 
+               item?.box_cover_url;
+  
+  if (!image) {
+    imageError.value = true;
+    return '';
+  }
+  
+  // 使用processImageUrl处理图片URL
+  return processImageUrl(image);
+});
+
 const formatPrice = (price: number) => {
   return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+const handleImageError = (e: Event) => {
+  imageLoading.value = false;
+  imageError.value = true;
+  // 可以设置一个默认占位图
+  const img = e.target as HTMLImageElement;
+  if (img && !img.src.includes('placeholder')) {
+    // 可以设置默认占位图
+    // img.src = '/placeholder.png';
+  }
+};
+
+const handleImageLoad = () => {
+  imageLoading.value = false;
+  imageError.value = false;
 };
 
 const handleClick = () => {
@@ -64,6 +109,15 @@ const handleClick = () => {
     transform: translateY(-2px);
     border-color: rgba(243, 164, 93, 0.3);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    
+    .case-image {
+      transform: scale(1.05);
+    }
+    
+    .chart-icon {
+      background: rgba(0, 0, 0, 0.8);
+      transform: scale(1.1);
+    }
   }
 }
 
@@ -82,6 +136,41 @@ const handleClick = () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+  
+  &[src=""],
+  &:not([src]) {
+    opacity: 0;
+  }
+}
+
+.image-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(23, 23, 31, 0.8);
+  z-index: 1;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(243, 164, 93, 0.3);
+  border-top-color: #f3a45d;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .chart-icon {
@@ -97,6 +186,8 @@ const handleClick = () => {
   justify-content: center;
   color: rgba(255, 255, 255, 0.8);
   z-index: 2;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .new-badge {
