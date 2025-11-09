@@ -78,9 +78,9 @@ const router = useRouter();
 const isMobile = computed(() => window.innerWidth < 768);
 
 const navItems = ref([
-  { name: "商城", path: "/mall", icon: "gift", badge: 0 },
+  { name: "首页", path: "/", icon: "gift", badge: 0 },
   { name: "游戏", path: "/games", icon: "games", badge: null },
-  { name: "礼物", path: "/grade-reward", icon: "gift", badge: null },
+  { name: "商城", path: "/grade-reward", icon: "gift", badge: null },
   { name: "排行版", path: "/battle", icon: "trophy", badge: null },
 ]);
 

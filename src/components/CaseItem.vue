@@ -33,14 +33,14 @@
         <div class="loading-spinner"></div>
       </div>
 
-      <div class="chart-icon">
+      <!-- <div class="chart-icon">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path
             d="M2 12h12v2H2v-2zm2-4h8v2H4V8zm2-4h4v2H6V4z"
             fill="currentColor"
           />
         </svg>
-      </div>
+      </div> -->
       <span v-if="item.isNew" class="new-badge">NEW</span>
     </div>
     <div class="case-info">
