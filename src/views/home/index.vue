@@ -9,7 +9,7 @@
             Ready to be part of the best unboxing site? Dive in and start
             unboxing today!
           </p>
-          <div class="welcome-buttons" v-if="!store.getters.userInfo">
+          <!-- <div class="welcome-buttons" v-if="!store.getters.userInfo">
             <v-btn class="login-btn" @click="openLogin"
               >登录</v-btn
             >
@@ -18,7 +18,7 @@
               @click="openRegister"
               >注册</v-btn
             >
-          </div>
+          </div> -->
         </div>
       </v-container>
     </section>
@@ -656,22 +656,18 @@ function scrollTopAnimate(id) {
   background-color: #f3a45d !important;
   color: #222222 !important;
   position: relative;
-  box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
 }
 
 .register-btn:hover {
-  box-shadow: 
-    0 3px 6px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 }
 
 .register-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
