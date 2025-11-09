@@ -139,10 +139,7 @@
 		<Login ref="loginRef" />
 		<!-- 移动端头部 -->
 		<div class="mobile-header">
-			<el-icon style="margin-top: -2px;" @click="menuDialog.open()" class="ml-2" :size="20">
-				<Fold />
-			</el-icon>
-
+			<!-- 侧边栏菜单按钮已隐藏 -->
 			<div class="ml-2">
 				<img style="height: 24px;" @click="goIndex" :src="logo" alt="">
 			</div>

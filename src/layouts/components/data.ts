@@ -17,13 +17,6 @@ const navList = [
 				badge: null,
 			},
 			{
-				name: 'ROLL房',
-				path: '/roll',
-				module: 'roll',
-				icon: 'box',
-				badge: null,
-			},
-			{
 				name: '热血对战',
 				path: '/battle',
 				module: 'battle',
@@ -39,6 +32,13 @@ const navList = [
 			},
 		],
 	},
+    {
+				name: 'ROLL房',
+				path: '/roll',
+				module: 'roll',
+				icon: 'box',
+				badge: null,
+			},
 	{
 		name: '每日任务',
 		path: '/task',
