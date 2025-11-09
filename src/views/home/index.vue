@@ -10,13 +10,11 @@
             unboxing today!
           </p>
           <div class="welcome-buttons" v-if="!store.getters.userInfo">
-            <v-btn class="login-btn" color="#f3a45d" @click="openLogin"
+            <v-btn class="login-btn" @click="openLogin"
               >登录</v-btn
             >
             <v-btn
               class="register-btn"
-              color="#f3a45d"
-              variant="outlined"
               @click="openRegister"
               >注册</v-btn
             >
@@ -252,14 +250,14 @@ const state = reactive({
   refList: [] as Array<any>,
   // 过滤相关
   filters: [
-    { label: "全部", value: "official", badge: null },
+    // { label: "全部", value: "official", badge: null },
     { label: "麒麟工会", value: "qilin", badge: null },
     { label: "猩红潮汐", value: "crimson", badge: "血压" },
     { label: "终焉之门", value: "final", badge: "一九" },
     { label: "追逐黎明", value: "dawn", badge: "三七" },
     { label: "命运之锁", value: "destiny", badge: "四六、保底" },
   ],
-  activeFilter: "official",
+  activeFilter: "qilin",
   priceRange: [0, 10000],
   maxPrice: 10000,
   sortBy: "price_desc",
@@ -440,7 +438,7 @@ const filteredProducts = computed(() => {
   let products = [...getAllProducts.value];
 
   // 根据过滤条件过滤
-  if (state.activeFilter && state.activeFilter !== "official") {
+  if (state.activeFilter && state.activeFilter !== "qilin") {
     // 根据过滤条件匹配商品
     const filterMap: Record<string, string[]> = {
       qilin: ["麒麟工会", "qilin", "麒麟"],
@@ -643,13 +641,49 @@ function scrollTopAnimate(id) {
   min-width: 120px;
   height: 44px;
   border-radius: 22px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: none;
+  border: none;
+  box-shadow: none;
+}
+
+.login-btn {
+  background-color: #3d3d3d !important;
+  color: #cccccc !important;
 }
 
 .register-btn {
-  border: 2px solid #f3a45d;
-  color: #f3a45d;
+  background-color: #f3a45d !important;
+  color: #222222 !important;
+  position: relative;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.register-btn:hover {
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.register-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
+  border-radius: 22px 22px 0 0;
+  pointer-events: none;
+}
+
+.login-btn:hover {
+  background-color: #444444 !important;
 }
 
 .section_top {
