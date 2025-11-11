@@ -392,7 +392,7 @@ onMounted(() => {
     padding-right: 0px;
   }
   .upgrade-bg {
-    margin-top: 0;
+    margin-top: 33px;
     .container-box {
       margin-top: 0 !important;
       .mallrowbox {

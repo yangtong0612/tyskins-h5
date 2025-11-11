@@ -2,15 +2,23 @@
   <v-row class="roll-handler align-center" no-gutters>
     <v-col cols="12" md="6">
       <div class="d-flex justify-md-start">
-        <div v-for="item in checkbox" :key="item.title" :class="{ active: item.title === currentTitle }"
-          class="checkbox-item" @click="handleClick(item)">
+        <div
+          v-for="item in checkbox"
+          :key="item.title"
+          :class="{ active: item.title === currentTitle }"
+          class="checkbox-item"
+          @click="handleClick(item)"
+        >
           {{ item.title }}
         </div>
       </div>
     </v-col>
 
     <v-col cols="12" md="6">
-      <v-row class="d-flex align-center justify-center justify-md-end pr-2" dense>
+      <v-row
+        class="d-flex align-center justify-center justify-md-end pr-2"
+        dense
+      >
         <!-- <v-col cols="auto">
           <el-checkbox v-model="form.no_password_room" @change="onChange"
             >非密码房</el-checkbox
@@ -192,7 +200,7 @@ export default defineComponent({
     right: 16px;
     height: 2px;
     background-color: #292931;
-    bottom:11px;
+    bottom: 11px;
   }
 }
 
@@ -209,8 +217,6 @@ export default defineComponent({
   cursor: pointer;
   font-size: 14px;
   padding-bottom: 12px;
-  ;
-
   &::last-child {
     margin-right: 0;
   }
@@ -239,16 +245,17 @@ export default defineComponent({
     margin-right: 10px;
   }
 
-  .m-justify-center {}
+  .m-justify-center {
+  }
 }
 
 @media screen and (max-width: 600px) {
-  .roll-handler{
+  .roll-handler {
     padding-left: 0px;
     padding-right: 0px;
-    margin-top: 15px;
+    margin-top: 50px;
   }
-  .checkbox-item{
+  .checkbox-item {
     flex: 1;
   }
   .m-v-btn {

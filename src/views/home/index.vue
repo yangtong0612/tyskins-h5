@@ -1,6 +1,6 @@
 <template>
   <div class="bigbg">
-    <div class="notice-bar-wrap v-container" v-if="notice.length">
+    <!-- <div class="notice-bar-wrap v-container" v-if="notice.length">
       <div v-if="!isMobile" class="notice-bar">
         <img class="icon_laba" src="@/assets/img/bos/laba.png" />
 
@@ -18,7 +18,23 @@
           </el-carousel-item>
         </el-carousel>
       </div>
-    </div>
+    </div> -->
+    <!-- 新增：过滤按钮栏 -->
+    <section class="filter-section" v-if="types.length">
+      <v-container>
+        <div class="filter-buttons">
+          <el-button
+            v-for="(type, index) in types"
+            :key="type.id"
+            :class="{ active: tabActiveId === type.id }"
+            @click="handleTypeFilter(type.id)"
+          >
+            {{ type.name }}
+          </el-button>
+        </div>
+      </v-container>
+    </section>
+
     <section
       v-if="rechargeWelfareboxList.length"
       class="section section_top"
@@ -35,6 +51,7 @@
               lg="3"
               md="3"
             >
+              <q-title :title="item.name" class="bg1"></q-title>
               <box-item :item="item" type="welfare"></box-item>
             </v-col>
           </v-row>
@@ -48,7 +65,7 @@
       data-myName="section_top"
     >
       <v-container>
-        <div>
+        <div style="{background: #222,border-radius: 10px;}">
           <q-title title="钥匙箱子" class="bg1"></q-title>
           <v-row class="mt-8 q-row--dense">
             <v-col
@@ -65,22 +82,20 @@
       </v-container>
     </section>
     <section
-      :ref="setRefAction"
+      v-if="activeTypeId && boxListData[activeTypeId].length"
       class="section"
-      :class="`section_0${index + 1}`"
-      :data-myName="`section_0${index + 1}`"
-      v-for="(type, index) in types"
-      :key="index"
+      :class="`section_0${activeSection}`"
+      :data-myName="`section_0${activeSection}`"
     >
       <v-container>
-        <div :id="'tab' + index">
+        <div :id="'tab' + activeSection">
           <q-title
-            :title="type?.name"
-            :class="index % 2 == 0 ? 'bg2' : 'bg1'"
+            :title="activeType?.name"
+            :class="activeSection % 2 == 0 ? 'bg2' : 'bg1'"
           ></q-title>
-          <v-row class="mt-8 q-row--dense" v-if="boxListData">
+          <v-row class="mt-8 q-row--dense">
             <v-col
-              v-for="(item, i) in boxListData[type?.id]"
+              v-for="(item, i) in boxListData[activeTypeId]"
               :key="item.id"
               cols="6"
               lg="3"
@@ -113,9 +128,11 @@ import { useStore } from "@/store";
 import { openLink } from "@/utils";
 import { processImageUrl } from "@/utils";
 import _ from "lodash";
+import { ElButton } from "element-plus";
 const store = useStore();
 store.dispatch("getRechargeWelfareBoxTypeId");
-
+// 新增：当前激活的类型ID（控制过滤）
+const activeTypeId = ref<number | null>(null);
 const state = reactive({
   notice: [],
   boxListData: {},
@@ -129,6 +146,14 @@ const state = reactive({
 });
 const { boxListData, rechargeWelfareboxList, types, keyBoxList, notice } =
   toRefs(state);
+const activeSection = computed(() => {
+  return types.value.find((type) => type.id === tabActiveId.value)?.index;
+});
+// 新增：过滤后的数据（根据激活的类型ID筛选）
+const filteredBoxList = computed(() => {
+  if (!activeTypeId.value) return [];
+  return boxListData.value[activeTypeId.value] || [];
+});
 const tabs = ref([
   // '最新盲盒',
   // '尝鲜推荐',
@@ -176,7 +201,14 @@ const initDom = () => {
     el.addEventListener("scroll", handleScroll);
   });
 };
-
+// 新增：类型过滤方法
+const handleTypeFilter = (typeId: number) => {
+  activeTypeId.value = typeId;
+};
+const activeType = computed(() => {
+  if (!activeTypeId.value || !types.value.length) return null;
+  return types.value.find((type) => type.id === activeTypeId.value) || null;
+});
 const isMobile = computed(() => window.innerWidth < 600);
 const handleScroll = () => {
   // 点击跳转的时候 滚动事件也会执行（所以点击的时候return）
@@ -274,7 +306,10 @@ onMounted(async () => {
   await getKeyBoxList();
   await getRechargeWelfareBoxList();
   await getBoxList();
-
+  // 初始化默认激活第一个类型
+  if (types.value.length) {
+    activeTypeId.value = types.value[0].id;
+  }
   // initDom();
 });
 
@@ -414,7 +449,35 @@ function scrollTopAnimate(id) {
   background-color: #ccc;
   border: 1px solid #fff;
 }
+.filter-section {
+  padding: 20px 0;
+  background: rgba(26, 26, 32, 0.9);
+  margin-bottom: 20px;
+}
 
+.filter-buttons {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.boxbox {
+  background: #222;
+  border-radius: 10px;
+}
+.filter-buttons .el-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #99a5b7;
+  border-radius: 8px;
+
+  &.active {
+    background: #f3a45d;
+    color: #fff;
+  }
+  &:hover {
+    background: rgba(243, 164, 93, 0.2);
+    color: #f3a45d;
+  }
+}
 @media (min-width: 1280px) {
   .v-col-lg-3 {
     flex: 0 0 20%;

@@ -619,10 +619,10 @@ const {
   }
 
   .mall-bg {
-    margin-top: 0px;
+    margin-top: 45px !important;
 
     .container-box {
-      margin-top: 0px;
+      margin-top: px;
     }
   }
 
