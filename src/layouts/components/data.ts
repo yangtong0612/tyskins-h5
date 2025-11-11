@@ -43,14 +43,8 @@ const navList = [
 		name: '每日任务',
 		path: '/task',
 		module: 'task',
-		// icon: 'gift',
 	},
-	// {
-	// 	name: '每日任务',
-	// 	path: '/battle',
-	// 	module: 'battle',
-	// 	icon: 'trophy',
-	// },
+
 	{
 		name: '商城',
 		path: '/mall',
@@ -61,16 +55,6 @@ const navList = [
 		path: '/promote',
 		module: 'promote',
 	},
-	// {
-	// 	name: '每日签到',
-	// 	path: '/user/signin',
-	// 	module: 'signin',
-	// },
-	// {
-	// 	name: '每日任务',
-	// 	path: '/task',
-	// 	module: 'task',
-	// },
 ]
 
 export { navList }

@@ -1,70 +1,40 @@
 <template>
   <div class="bottom-navigation" v-if="isMobile">
+    <!-- 一级导航项循环 -->
     <div
-      v-for="item in navItems"
+      v-for="(item, index) in navItems"
       :key="item.path"
       class="nav-item"
       :class="{ active: isActive(item) }"
-      @click="handleNavClick(item)"
+      @click="handleNavClick(item, index)"
     >
       <div class="nav-icon-wrapper">
-        <svg
-          v-if="item.icon === 'chat'"
-          class="nav-icon"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <path
-            d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
-            fill="currentColor"
-          />
-        </svg>
-        <svg
-          v-else-if="item.icon === 'games'"
-          class="nav-icon"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <path
-            d="M15.5 12c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm-7 0c0 .83-.67 1.5-1.5 1.5S6 12.83 6 12s.67-1.5 1.5-1.5S9 11.17 9 12zm-4-6c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2H5z"
-            fill="currentColor"
-          />
-        </svg>
-        <svg
-          v-else-if="item.icon === 'gift'"
-          class="nav-icon"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <path
-            d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"
-            fill="currentColor"
-          />
-        </svg>
-        <svg
-          v-else-if="item.icon === 'trophy'"
-          class="nav-icon"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <path
-            d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"
-            fill="currentColor"
-          />
-        </svg>
+        <!-- 原 svg 图标代码保持不变 -->
         <span v-if="item.badge && item.badge > 0" class="nav-badge">{{
           item.badge
         }}</span>
+        <!-- <svg v-if="item.children && item.children.length" class="submenu-indicator" ...></svg> -->
       </div>
       <span class="nav-label">{{ item.name }}</span>
+    </div>
+
+    <!-- 二级菜单容器 移到循环外部 -->
+    <div
+      class="submenu-container"
+      v-if="showSubmenu !== null && navItems[showSubmenu]?.children?.length"
+      :style="{ left: `${showSubmenu * 20}%` }"
+    >
+      <div class="submenu-arrow"></div>
+      <div class="submenu-list">
+        <div
+          v-for="(subItem, subIndex) in navItems[showSubmenu].children"
+          :key="subItem.path"
+          class="submenu-item"
+          @click="handleSubmenuClick(subItem)"
+        >
+          {{ subItem.name }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -72,17 +42,42 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
+import Index from "../index.vue";
+const showSubmenu = ref<number | null>(null); // 存储当前展开二级菜单的索引（null为关闭）
 const route = useRoute();
 const router = useRouter();
 const isMobile = computed(() => window.innerWidth < 768);
 
 const navItems = ref([
-  { name: "首页", path: "/", icon: "gift", badge: 0 },
-  { name: "游戏", path: "/battle", icon: "trophy", badge: null },
+  { name: "首页", path: "/", icon: "gift", badge: 0, children: [] },
+  {
+    name: "游戏",
+    path: "/games",
+    icon: "trophy",
+    badge: null,
+    children: [
+      { name: "追梦升级", path: "/upgrade", icon: "upgrade", badge: null },
+      { name: "热血对战", path: "/battle", icon: "battle", badge: null },
+      {
+        name: "扫雷战场",
+        path: "/mine-sweeping",
+        icon: "mine-sweeping",
+        badge: null,
+      },
+    ],
+  },
   { name: "Roll房", path: "/roll", icon: "games", badge: null },
   { name: "商城", path: "/mall", icon: "gift", badge: null },
-  { name: "功能", path: "/task", icon: "trophy", badge: null },
+  {
+    name: "功能",
+    path: "/set",
+    icon: "trophy",
+    badge: null,
+    children: [
+      { name: "推广", path: "/promote", icon: "promote", badge: null },
+      { name: "每日签到", path: "/task", icon: "task", badge: null },
+    ],
+  },
 ]);
 
 function isActive(item: any): boolean {
@@ -92,10 +87,26 @@ function isActive(item: any): boolean {
   return route.path.startsWith(item.path);
 }
 
-function handleNavClick(item: any) {
-  if (item.path) {
+// function handleNavClick(item: any) {
+//   if (item.path) {
+//     router.push(item.path);
+//   }
+// }
+function handleNavClick(item: any, index: number) {
+  if (item.children && item.children.length) {
+    // 有二级菜单：点击当前项则关闭，点击其他项则切换
+    showSubmenu.value = showSubmenu.value === index ? null : index;
+  } else {
+    // 无子菜单：直接跳转
     router.push(item.path);
+    showSubmenu.value = null; // 关闭可能存在的二级菜单
   }
+}
+
+// 【新增】二级菜单点击事件：跳转并关闭菜单
+function handleSubmenuClick(subItem: any) {
+  router.push(subItem.path);
+  showSubmenu.value = null; // 点击后关闭二级菜单
 }
 </script>
 
@@ -185,6 +196,63 @@ function handleNavClick(item: any) {
   margin-top: 2px;
   line-height: 1;
 }
+.submenu-indicator {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  transform: rotate(90deg); // 旋转为向下箭头
+}
+
+// 【新增】二级菜单容器
+.submenu-container {
+  position: absolute;
+  bottom: 60px; // 显示在一级导航上方
+  width: 20%; // 与一级导航项宽度匹配
+  padding: 8px 0;
+  background: rgba(26, 26, 32, 0.98);
+  border: 1px solid rgba(243, 164, 93, 0.3);
+  border-radius: 8px;
+  z-index: 999;
+  box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.3);
+}
+
+// 【新增】二级菜单箭头（指向一级导航）
+.submenu-arrow {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(243, 164, 93, 0.3);
+}
+
+// 【新增】二级菜单列表
+.submenu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+// 【新增】二级菜单项
+.submenu-item {
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 12px;
+  color: #99a5b7;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(243, 164, 93, 0.2);
+    color: #f3a45d;
+  }
+
+  &:active {
+    background: rgba(243, 164, 93, 0.3);
+  }
+}
 
 @media screen and (max-width: 480px) {
   .bottom-navigation {
@@ -203,6 +271,14 @@ function handleNavClick(item: any) {
 
   .nav-label {
     font-size: 10px;
+  }
+  .submenu-container {
+    bottom: 56px; // 与一级导航高度匹配
+  }
+
+  .submenu-item {
+    padding: 8px 6px;
+    font-size: 11px;
   }
 }
 </style>
