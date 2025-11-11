@@ -79,9 +79,10 @@ const isMobile = computed(() => window.innerWidth < 768);
 
 const navItems = ref([
   { name: "首页", path: "/", icon: "gift", badge: 0 },
-  { name: "游戏", path: "/games", icon: "games", badge: null },
-  { name: "商城", path: "/grade-reward", icon: "gift", badge: null },
-  { name: "排行版", path: "/battle", icon: "trophy", badge: null },
+  { name: "游戏", path: "/battle", icon: "trophy", badge: null },
+  { name: "Roll房", path: "/roll", icon: "games", badge: null },
+  { name: "商城", path: "/mall", icon: "gift", badge: null },
+  { name: "功能", path: "/task", icon: "trophy", badge: null },
 ]);
 
 function isActive(item: any): boolean {

@@ -6,7 +6,7 @@
     </div>
     <div v-else class="mobile-header-wrapper">
       <Header></Header>
-      <ScrollCard />
+      <!-- <ScrollCard /> -->
     </div>
 
     <Sidebar></Sidebar>
@@ -38,11 +38,20 @@
       </div>
 
       <!-- 公告栏 - 放在轮播图下面 -->
-      <div v-if="$route.name === 'Home' && notice.length" class="notice-bar-wrap v-container">
+      <div
+        v-if="$route.name === 'Home' && notice.length"
+        class="notice-bar-wrap v-container"
+      >
         <div v-if="!isMobile" class="notice-bar">
-          <img class="icon_laba" src="@/assets/img/bos/laba.png">
-          <el-carousel direction="vertical" arrow="never" style="flex: 1;" height="44px" indicator-position="none">
-            <el-carousel-item v-for="(item,index) in notice" :key="index">
+          <img class="icon_laba" src="@/assets/img/bos/laba.png" />
+          <el-carousel
+            direction="vertical"
+            arrow="never"
+            style="flex: 1"
+            height="44px"
+            indicator-position="none"
+          >
+            <el-carousel-item v-for="(item, index) in notice" :key="index">
               <div class="line1 cursor">
                 <span>{{ item }}</span>
               </div>
@@ -50,9 +59,15 @@
           </el-carousel>
         </div>
         <div class="notice-bar" v-else>
-          <img class="icon_laba" src="@/assets/img/bos/laba.png">
+          <img class="icon_laba" src="@/assets/img/bos/laba.png" />
           <marquee>
-            <span v-for="(item,index) in notice" :key="index" style="cursor: pointer;" class="ml-3">{{ item }}</span>
+            <span
+              v-for="(item, index) in notice"
+              :key="index"
+              style="cursor: pointer"
+              class="ml-3"
+              >{{ item }}</span
+            >
           </marquee>
         </div>
       </div>
@@ -135,16 +150,16 @@ const handleClickBanner = (item) => {
 };
 
 const getNotice = async () => {
-  PublicService.getNotice().then(res => {
+  PublicService.getNotice().then((res) => {
     let str = res.data.data.content;
     if (!str) return;
     let isWrap = /\n/.test(str);
     if (!isWrap) {
-      notice.value = [str]
+      notice.value = [str];
     } else {
-      notice.value = str.split('\n');
+      notice.value = str.split("\n");
     }
-  })
+  });
 };
 
 // 监听路由变化
@@ -199,9 +214,13 @@ onMounted(() => {
   color: #ffffff;
   line-height: 44px;
   overflow: hidden;
-  background: linear-gradient(90deg, rgba(139, 92, 60, 0.8) 0%, rgba(107, 71, 46, 0.9) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 60, 0.8) 0%,
+    rgba(107, 71, 46, 0.9) 100%
+  );
   border: 1px solid rgba(243, 164, 93, 0.3);
-  
+
   .line1 {
     line-height: 44px;
   }
@@ -446,10 +465,10 @@ onMounted(() => {
 .layout-main {
   // margin-top: 80px;
   position: relative;
-  
+
   &.has-bottom-nav {
     padding-bottom: 60px;
-    
+
     @media screen and (max-width: 480px) {
       padding-bottom: 56px;
     }
