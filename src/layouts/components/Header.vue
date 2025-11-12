@@ -267,10 +267,13 @@
           <v-btn
             class="mx-3 mt-1"
             style="
-              border-radius: 20px;
-              padding-left: 5px;
-              padding-right: 5px;
-              min-width: 30px;
+             width: 100px;
+						 height: 40px;
+						 border-radius: 8px;
+						 display: flex;
+						 justify-content: center;
+						 align-items: center;
+						 
             "
             height="20"
             @click="openCzTs()"

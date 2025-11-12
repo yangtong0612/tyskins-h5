@@ -77,7 +77,7 @@
             </v-col>
             <v-col cols="2" class="tc d-flex justify-center gap-2">
               <v-btn
-                style="border-radius: 10px; min-height: 80px"
+                style="border-radius: 10px"
                 @click="showGenerateDialog = true"
                 color="#f3a45d"
                 height="36"
@@ -87,7 +87,7 @@
                 <span class="fs14 text-white">导出</span>
               </v-btn>
               <v-btn
-                style="border-radius: 10px; min-width: 80px"
+                style="border-radius: 10px"
                 @click="goTodDetail(item.id)"
                 color="#f3a45d"
                 height="36"
@@ -411,6 +411,7 @@ const formatDate = (timestamp: number | string) => {
 @media screen and (max-width: 600px) {
   .cdk-table-wrapper {
     overflow-x: auto;
+    max-width: 100vh;
   }
 
   .table-header,

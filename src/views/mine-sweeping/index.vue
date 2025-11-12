@@ -1435,7 +1435,15 @@ onMounted(() => {
     width: 100%;
     height: auto;
   }
-
+  .mine-tabs {
+    position: relative;
+    display: flex;
+    height: 58px;
+    padding: 0 15px;
+    background-color: #11151b;
+    align-items: center;
+    margin-top: 64px;
+  }
   .mine-sweeping-body {
     flex-direction: column-reverse;
     padding: 0px 10px 10px 10px;

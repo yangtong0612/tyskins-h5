@@ -75,9 +75,14 @@ const navItems = ref([
     badge: null,
     children: [
       { name: "福利任务", path: "/task", icon: "task", badge: null },
-      { name: "每日签到", path: "/task", icon: "task", badge: null },
-      { name: "免费宝箱", path: "/task", icon: "task", badge: null },
-       { name: "推广", path: "/promote", icon: "promote", badge: null },
+      { name: "每日签到", path: "/user/signin", icon: "signin", badge: null },
+      {
+        name: "免费宝箱",
+        path: "/grade-reward",
+        icon: "grade-reward",
+        badge: null,
+      },
+      { name: "推广", path: "/promote", icon: "promote", badge: null },
     ],
   },
 ]);
