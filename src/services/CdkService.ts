@@ -7,7 +7,7 @@ export class CdkService {
 		page?: number;
 		page_size?: number;
 	}): Promise<IHttpResponse> {
-		return http('/api/cdk/list', {
+		return http('/api/v2/cdkey/list', {
 			method: 'get',
 			params
 		});
@@ -18,10 +18,13 @@ export class CdkService {
 		name: string;
 		value: number;
 		quantity: number;
-	}): Promise<IHttpResponse> {
-		return http('/api/cdk/generate', {
+	}, token?: string ): Promise<IHttpResponse> {
+		return http('/api/v2/cdkey/generate', {
 			method: 'post',
-			data: params
+			data: params,
+			headers:{
+				'Authorization': `Bearer ${token}`,
+			}
 		});
 	}
 
@@ -31,5 +34,16 @@ export class CdkService {
 			method: 'delete'
 		});
 	}
+	static getDetail(params: {
+		page?: number;
+		page_size?: number;
+		cdkey_id?:number;
+	}): Promise<IHttpResponse> {
+		return http(`/api/v2/cdkey/details`, { 
+			method: 'get',
+			params,
+			headers: { Authorization: `Bearer ${localStorage.getItem('token') || ''}` },
+	});
+}
 }
 
