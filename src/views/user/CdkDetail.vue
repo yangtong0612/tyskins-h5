@@ -20,7 +20,7 @@
           <td>{{ item.cdkey_id }}</td>
           <td>{{ item.card_no }}</td>
           <td>{{ item.card_secret }}</td>
-          <td>{{ getStatusText(item.is_use) }}</td>
+          <td>{{ getStatusText(String(item.is_use)) }}</td>
           <!-- 优化：状态文字格式化 -->
         </tr>
       </tbody>
@@ -75,8 +75,8 @@ const { cdkDetails, page, page_size, total, loading } = toRefs(state);
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
     "-1": "全部",
+    "0": "未使用",
     "1": "已使用",
-    disabled: "已禁用",
   };
   return statusMap[status] || status;
 };

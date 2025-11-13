@@ -20,7 +20,7 @@
       </v-btn>
     </div>
 
-    <div v-if="$route.path === '/user/cdk'" class="wd-mtitle">
+    <!-- <div v-if="$route.path === '/user/cdk'" class="wd-mtitle">
       <span>我的CDK</span>
       <v-btn
         v-if="isMobile"
@@ -33,7 +33,7 @@
       >
         <span class="fs14 text-white">生成CDK</span>
       </v-btn>
-    </div>
+    </div> -->
     <router-view />
     <!-- CDK表格 -->
     <div class="cdk-table-wrapper mt-6" v-if="$route.path === '/user/cdk'">
@@ -69,7 +69,7 @@
             </v-col>
             <v-col cols="2" class="tc">
               <span :class="getStatusClass(item.status)">
-                {{ getStatusText(item.status) }}
+                {{ getStatusText(String(item.used)) }}
               </span>
             </v-col>
             <v-col cols="2" class="tc">
@@ -80,9 +80,8 @@
                 style="border-radius: 10px"
                 @click="showGenerateDialog = true"
                 color="#f3a45d"
-                height="36"
+                height="30"
                 elevation="0"
-                class="ml-4"
               >
                 <span class="fs14 text-white">导出</span>
               </v-btn>
@@ -90,9 +89,8 @@
                 style="border-radius: 10px"
                 @click="goTodDetail(item.id)"
                 color="#f3a45d"
-                height="36"
+                height="30"
                 elevation="0"
-                class="ml-4"
               >
                 <span class="fs14 text-white">详情</span>
               </v-btn>
@@ -222,7 +220,6 @@ const getCdkList = async () => {
       page_size: state.page_size,
     });
     if (res.data.code === 0) {
-      debugger;
       state.cdkList = res.data.data?.list || [];
       state.total = res.data.data?.total || 0;
     }
@@ -304,10 +301,9 @@ const goTodDetail = (CdkeyId: Number) => {
 };
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
-    active: "激活",
-    used: "已使用",
-    expired: "已过期",
-    disabled: "已禁用",
+    "-1": "全部",
+    "0": "未使用",
+    "1": "已使用",
   };
   return statusMap[status] || status;
 };

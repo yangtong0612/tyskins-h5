@@ -85,7 +85,7 @@
                 </div>
               </div>
 
-              <div class="py-4">
+              <div v-if="!isMobile" class="py-4">
                 <v-tabs class="vertical-tabs" direction="vertical">
                   <v-tab to="/user/mystock">
                     <img

@@ -267,18 +267,16 @@
           <v-btn
             class="mx-3 mt-1"
             style="
-             width: 100px;
-						 height: 40px;
-						 border-radius: 8px;
-						 display: flex;
-						 justify-content: center;
-						 align-items: center;
-						 
+              height: 28px !important;
+              min-height: 28px !important;
+              border-radius: 8px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
             "
-            height="20"
             @click="openCzTs()"
             color="#e79d5d"
-            size="small"
+            size="x-small"
             ><span class="text-white">充值</span></v-btn
           >
           <div class="mr-2">
