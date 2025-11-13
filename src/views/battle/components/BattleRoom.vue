@@ -1,14 +1,21 @@
 <template>
   <div
     class="battle-room-item"
-    :class="{ 'in-progress': detail.status === 1, 'game-over': detail.status === 2 }"
+    :class="{
+      'in-progress': detail.status === 1,
+      'game-over': detail.status === 2,
+    }"
     v-loading="loading"
   >
     <div class="battle-room-left">
       <div class="battle-room-header">
         <!-- 状态 -->
         <div class="room-status">
-          <img v-if="detail.status === 0" src="@/assets/img/battle/wait.png" alt="" />
+          <img
+            v-if="detail.status === 0"
+            src="@/assets/img/battle/wait.png"
+            alt=""
+          />
           <img
             v-else-if="detail.status === 1"
             src="@/assets/img/battle/icon-in-progress.png"
