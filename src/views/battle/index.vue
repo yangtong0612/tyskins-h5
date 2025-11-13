@@ -233,7 +233,7 @@ onMounted(() => {
 
 .battle-left {
   padding-top: 0px;
-  min-height: 952px;
+  //   min-height: 952px;
   margin-right: 15px;
   width: 382px;
 }
@@ -244,7 +244,7 @@ onMounted(() => {
 
 @media screen and (max-width: 600px) {
   .battle-wrap {
-    margin-top: 295px;
+    // margin-top: 295px;
     .container-box2 {
       padding: 10px 10px;
     }
