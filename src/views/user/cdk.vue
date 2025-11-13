@@ -78,7 +78,7 @@
             <v-col cols="2" class="tc d-flex justify-center gap-2">
               <v-btn
                 style="border-radius: 10px"
-                @click="showGenerateDialog = true"
+                @click="exportCdk(item.id)"
                 color="#f3a45d"
                 height="30"
                 elevation="0"
@@ -176,7 +176,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, toRefs } from "vue";
 import { CdkService } from "@/services/CdkService";
-import { toast } from "@/composables/util";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useStore } from "@/store";
 import { useRoute, useRouter } from "vue-router";
@@ -299,6 +298,11 @@ const handleDelete = async (id: number) => {
 const goTodDetail = (CdkeyId: Number) => {
   router.push({ path: `/user/cdk/detail/${CdkeyId}` });
 };
+
+//导出功能实现
+const exportCdk = (id : number) =>{
+  
+}
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
     "-1": "全部",

@@ -23,6 +23,12 @@
     <section class="filter-section" v-if="types.length">
       <v-container>
         <div class="filter-buttons">
+          <!-- <el-button
+            :class="{ active: tabActiveId === 0 }"
+            @click="handleTypeFilter(0)"
+          >
+            全部
+          </el-button> -->
           <el-button
             v-for="(type, index) in types"
             :key="type.id"
@@ -82,7 +88,10 @@
       </v-container>
     </section>
     <section
-      v-if="activeTypeId && boxListData[activeTypeId].length"
+      v-if="
+        (activeTypeId === 0 && allBoxList.length) ||
+        (activeTypeId && boxListData[activeTypeId]?.length)
+      "
       class="section"
       :class="`section_0${activeSection}`"
       :data-myName="`section_0${activeSection}`"
@@ -90,12 +99,14 @@
       <v-container>
         <div :id="'tab' + activeSection">
           <q-title
-            :title="activeType?.name"
+            :title="activeTypeId === 0 ? '全部盲盒' : activeType?.name"
             :class="activeSection % 2 == 0 ? 'bg2' : 'bg1'"
           ></q-title>
           <v-row class="mt-8 q-row--dense">
             <v-col
-              v-for="(item, i) in boxListData[activeTypeId]"
+              v-for="(item, i) in activeTypeId === 0
+                ? allBoxList
+                : boxListData[activeTypeId]"
               :key="item.id"
               cols="6"
               lg="3"
@@ -133,6 +144,8 @@ const store = useStore();
 store.dispatch("getRechargeWelfareBoxTypeId");
 // 新增：当前激活的类型ID（控制过滤）
 const activeTypeId = ref<number | null>(null);
+// 新增：存储所有盲盒的全量数据
+const allBoxList = ref<any[]>([]);
 const state = reactive({
   notice: [],
   boxListData: {},
@@ -147,7 +160,8 @@ const state = reactive({
 const { boxListData, rechargeWelfareboxList, types, keyBoxList, notice } =
   toRefs(state);
 const activeSection = computed(() => {
-  return types.value.find((type) => type.id === tabActiveId.value)?.index;
+  if (activeTypeId.value === 0) return 0; // “全部”对应section_00
+  return types.value.find((type) => type.id === activeTypeId.value)?.index || 0;
 });
 // 新增：过滤后的数据（根据激活的类型ID筛选）
 const filteredBoxList = computed(() => {
@@ -268,11 +282,23 @@ const getBoxList = async () => {
   types = _.sortBy(types, (o) => o.sort).filter(
     (type) => type.id !== state.recharge_welfare_box_type_id
   );
-  tabActiveId.value = types[0].id;
+  // 新增：注入“全部”类别
+  const allType = {
+    id: 0,
+    name: "全部",
+    sort: -1,
+    status: 0,
+    type: 0,
+    version: 0,
+  };
+  types.unshift(allType); // 将“全部”插入到类型列表最前面
+  tabActiveId.value = types[0].id; // 默认选中“全部”
   tabs.value = types;
   state.types = types;
+  const allBoxes: any[] = [];
   for (let i = 0; i < types.length; i++) {
     const item = types[i];
+    if (item.id === 0) continue; // 跳过“全部”类别的接口请求
     if (item.id == state.recharge_welfare_box_type_id) {
       continue;
     }
@@ -282,8 +308,10 @@ const getBoxList = async () => {
       page_size: 24,
     });
     state.boxListData[item.id] = res.data.data.list;
+    allBoxes.push(...res.data.data.list); // 聚合所有类型的盲盒数据
     // console.log(res.data.data.list)
   }
+  allBoxList.value = allBoxes; // 赋值全量数据
 };
 
 const getBoxAllType = async () => {
@@ -307,9 +335,7 @@ onMounted(async () => {
   await getRechargeWelfareBoxList();
   await getBoxList();
   // 初始化默认激活第一个类型
-  if (types.value.length) {
-    activeTypeId.value = types.value[0].id;
-  }
+  activeTypeId.value = 0; // 初始化默认激活“全部”
   // initDom();
 });
 
@@ -457,7 +483,13 @@ function scrollTopAnimate(id) {
 
 .filter-buttons {
   gap: 12px;
-  flex-wrap: wrap;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+filter-buttons::-webkit-scrollbar {
+  display: none;
 }
 .boxbox {
   background: #222;
@@ -474,8 +506,8 @@ function scrollTopAnimate(id) {
     color: #fff;
   }
   &:hover {
-    background: rgba(243, 164, 93, 0.2);
-    color: #f3a45d;
+    background: #f3a45d;
+    color: #fff;
   }
 }
 @media (min-width: 1280px) {
@@ -487,6 +519,9 @@ function scrollTopAnimate(id) {
 </style>
 <style lang="scss" scoped>
 @media screen and (max-width: 768px) {
+  .filter-buttons {
+    gap: 8px;
+  }
   .section {
     padding-top: 20px;
     padding-bottom: 20px;
