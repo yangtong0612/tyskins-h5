@@ -1,55 +1,56 @@
 <template>
-  <v-card elevation="0" style="background-color: rgba(44, 44, 61, 0.5); border-radius: 10px;" :loading="loading" class="mx-auto pt-4">
-    <!-- <template slot="progress">
-      <v-progress-linear
-        color="deep-purple"
-        height="10"
-        indeterminate
-      ></v-progress-linear>
-    </template> -->
-    <!-- {{rollItemData}} -->
-    <div class="rollitem-topbox">
-      <div class="px-4 mt-3" style="height: 74px;">
-      <div class="main_skins" style="flex-wrap: nowrap;overflow-x: auto;">
-        <div v-for="(item, index) in rollItemData.main_skins" :key="index">
-          <img style="height: 50px;" :src="item.image_url" alt="" />
+  <div class="roll-card">
+    <!-- 顶部区域：头像 + 官方抽奖标签 -->
+    <div class="card-header">
+      <div class="avatar-box">
+        <div class="avatar" style="background-color: #ff6b9b">
+          <!-- 模拟卡通头像，实际替换为真实图片路径 -->
+          <div class="avatar-content">
+            <span class="avatar-text">蜡笔小新</span>
+          </div>
         </div>
+        <div class="official-tag">官方抽奖</div>
       </div>
+      <h2 class="card-title">Weekly roll</h2>
     </div>
-    <div class="d-flex  mb-4">
-        <div class="fs13" style="color: #f3a45d;">
-          参与人数：{{ rollItemData.join_num }}人
-        </div>
-        <div class="fs13 ml-2" style="color: #f3a45d;">道具数：{{ rollItemData.prize_num }}个</div>
-      </div>
-      <div class="fs14" style="height: 40px; color: rgb(186, 193, 211);">
-        参与资格：<span v-if="rollItemData.user_grade>0">等级≥{{rollItemData.user_grade}}；</span> {{ rollItemData.room_desc }}
-      </div>
-    </div>
-    <v-card-text>
-      
-      <div class="d-flex align-center px-4 py-4">
-        <div class="mr-3">
-          <v-avatar width="56" height="56">
-            <img style="width: 100%" :src="rollItemData.avatar" alt="" />
-          </v-avatar>
-        </div>
-        <div class="flex-1">
-          <div class="fs14 line1  text-fff80">{{ rollItemData.room_name || "" }}</div>
-          <div class="fs18" style="color: #f3a45d">{{rollItemData.prize_pool}}</div>
-          <!-- <div class="fs12 text-muted line3">
-            开奖时间：
-            {{
-            $dayjs.unix(rollItemData.lottery_time).format("YYYY-MM-DD HH:mm:ss")
-          }}
-          </div> -->
-        </div>
-        <v-btn style="border-radius: 10px;" @click="goDetail(rollItemData.id)" width="80" height="30" color="#e69d5c" elevation="0"><span class="text-white">查看详情</span></v-btn>
-      </div>
 
-    </v-card-text>
-  </v-card>
+    <!-- 数据统计区域 -->
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-label">奖金池</span>
+        <span class="stat-value">$11115.15</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">饰品</span>
+        <span class="stat-value">123</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">玩家</span>
+        <span class="stat-value">210</span>
+      </div>
+    </div>
+
+    <!-- 饰品展示区域 -->
+    <div class="skins-row">
+      <div class="skin-item" style="background-color: #4a4a5e">
+        <span class="skin-price">$1059.72</span>
+      </div>
+      <div class="skin-item" style="background-color: #3a3a4e">
+        <span class="skin-price">$1059.72</span>
+      </div>
+      <div class="skin-item" style="background-color: #2a2a3e">
+        <span class="skin-price">$1059.72</span>
+      </div>
+    </div>
+
+    <!-- 按钮区域 -->
+    <button class="view-btn"  @click="goDetail(rollItemData.id)"><span class="btn-icon">👁️</span> 查看抽奖</button>
+
+    <!-- 结束时间区域 -->
+    <div class="end-time">结束: 05/19/2024 22:55</div>
+  </div>
 </template>
+
 <script lang="ts" setup>
 import { ref } from "vue";
 import avatar from "@/assets/img/battle/robot-avatar.jpg";
@@ -70,28 +71,130 @@ const selection = ref(1);
 function goDetail(id) {
   router.push(`/roll/${id}`);
 }
-// export default {
-//     data: () => ({
-//       loading: false,
-//       selection: 1,
-//     }),
-//     methods: {
-//       reserve () {
-//         this.loading = true
 
-//         setTimeout(() => (this.loading = false), 2000)
-//       },
-//     },
-//   }
 </script>
 
-<style>
-.rollitem-topbox{
-  margin: 0 15px;
-  padding: 15px;
+<style scoped>
+.roll-card {
+  background-color: rgba(44, 44, 61, 0.5);
+  border-radius: 10px;
+  padding: 16px;
+  width: 300px; /* 可根据需求调整宽度 */
+  margin: 0 auto;
 }
-.main_skins{
+
+.card-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.avatar-box {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+}
+
+.avatar-content {
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.official-tag {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f5a623;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.card-title {
+  font-size: 20px;
+  color: #fff;
+  margin: 0;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: #99a5b7;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 16px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.skins-row {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.skin-item {
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+.skin-price {
+  color: #f5a623;
+  font-size: 12px;
+}
+
+.view-btn {
+  width: 100%;
+  height: 40px;
+  background-color: #ff7d00;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-icon {
+  font-size: 18px;
+}
+
+.end-time {
+  text-align: center;
+  font-size: 12px;
+  color: #99a5b7;
+  margin-top: 8px;
 }
 </style>

@@ -4,32 +4,44 @@
       <div class="roll-item" v-for="item in roomList" :key="item.id">
         <div class="profile">
           <div class="avatar">
-            <img :src="item.avatar ? parseImg(item.avatar) : defaultAvater" alt="" />
+            <img
+              :src="item.avatar ? parseImg(item.avatar) : defaultAvater"
+              alt=""
+            />
             <!-- <div v-if="!item.avatar" class="badge">官方</div> -->
           </div>
           <div class="info">
-            <p class="name">{{item.room_name}}</p>
-            <p class="date">开奖时间：{{ $dayjs.unix(item.lottery_time).format("YYYY-MM-DD HH:mm:ss") }}</p>
+            <p class="name">{{ item.room_name }}</p>
+            <p class="date">
+              开奖时间：{{
+                $dayjs.unix(item.lottery_time).format("YYYY-MM-DD HH:mm:ss")
+              }}
+            </p>
           </div>
         </div>
         <div class="detalis">
           <div class="imgs">
-            <img v-for="skin in item.main_skins" :key="skin.id" :src="skin.image_url" class="bg_d6b45b" />
+            <img
+              v-for="skin in item.main_skins"
+              :key="skin.id"
+              :src="skin.image_url"
+              class="bg_d6b45b"
+            />
           </div>
           <div class="info">
             <div class="item coin">
-              <img src="@/assets/img/jb_01.png" alt="coin">
-              <span>{{item.prize_pool}}</span>
+              <img src="@/assets/img/jb_01.png" alt="coin" />
+              <span>{{ item.prize_pool }}</span>
             </div>
-            <div class="item num">参与人数：{{item.max_join_num}}</div>
-            <div class="item num">道具数：{{item.award_num}}</div>
+            <div class="item num">参与人数：{{ item.max_join_num }}</div>
+            <div class="item num">道具数：{{ item.award_num }}</div>
           </div>
         </div>
         <!-- <div class="mobile-imgs">
           <img v-for="skin in item.main_skins" :key="skin.id" :src="skin.image_url" />
         </div> -->
         <div class="room-desc">
-          {{item.room_desc}}
+          {{ item.room_desc }}
         </div>
         <button @click="toRoll(item.id)" class="btn-detail">查看详情</button>
         <!-- <div class="countdown">
@@ -45,37 +57,46 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, reactive, inject, toRefs } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  reactive,
+  inject,
+  toRefs,
+} from "vue";
 import { processImageUrl } from "@/utils";
-import { RollService } from "@/services/RollService"
-import { formatRemainTime } from "@/utils"
-import defaultAvater from "@/assets/img/roll/default_avatar.png"
+import { RollService } from "@/services/RollService";
+import { formatRemainTime } from "@/utils";
+import defaultAvater from "@/assets/img/roll/default_avatar.png";
 import { useRouter } from "vue-router";
-import logo from "@/assets/img/m24_logo.png"
+import logo from "@/assets/img/m24_logo.png";
 export default defineComponent({
   name: "Roll",
   setup() {
-    const router = useRouter()
+    const router = useRouter();
     const state = reactive({
-      roomList: []
-    })
-    const closeDialog = inject("closeDialog")
+      roomList: [],
+    });
+    const closeDialog = inject("closeDialog");
 
     onMounted(async () => {
-      await getRoomList()
-      startCountdown()
-    })
+      await getRoomList();
+      startCountdown();
+    });
 
     onUnmounted(() => {
-      clearInterval(timer)
-    })
+      clearInterval(timer);
+    });
 
-    let timer = 0
+    let timer = 0;
     function startCountdown() {
-      clearInterval(timer)
+      clearInterval(timer);
       timer = setInterval(() => {
-        state.roomList.forEach(v => v.countdown = formatRemainTime(v.lottery_time * 1000))
-      }, 1000)
+        state.roomList.forEach(
+          (v) => (v.countdown = formatRemainTime(v.lottery_time * 1000))
+        );
+      }, 1000);
     }
 
     async function getRoomList() {
@@ -86,32 +107,34 @@ export default defineComponent({
         no_password_room: true,
         order: "desc",
         room_type: -1,
-        sort: "prize_pool"
+        sort: "prize_pool",
       });
-      let { data: { list, total } } = resp.data
+      let {
+        data: { list, total },
+      } = resp.data;
 
-      state.roomList = list.map(v => {
-        v.countdown = formatRemainTime(v.lottery_time * 1000)
-        v.main_skins.splice(3)
-        return v
-      })
+      state.roomList = list.map((v) => {
+        v.countdown = formatRemainTime(v.lottery_time * 1000);
+        v.main_skins.splice(3);
+        return v;
+      });
     }
 
     function toRoll(id: number) {
-      router.push(`/roll/${id}`)
-      closeDialog()
+      router.push(`/roll/${id}`);
+      closeDialog();
     }
 
     const parseImg = (img) => {
-      return processImageUrl(img)
-    }
+      return processImageUrl(img);
+    };
 
     return {
       defaultAvater,
       logo,
       ...toRefs(state),
       toRoll,
-      parseImg
+      parseImg,
     };
   },
 });
@@ -120,23 +143,23 @@ export default defineComponent({
 <style lang="scss" scoped>
 // 自定义背景色
 .bg_d6b45b {
-	background-image: linear-gradient(0deg, #413109, #9B7519, #3A2A06);
+  background-image: linear-gradient(0deg, #413109, #9b7519, #3a2a06);
 }
 
 .bg_ff8789 {
-	background-image: linear-gradient(0deg, #410E09, #922D24, #410E09);
+  background-image: linear-gradient(0deg, #410e09, #922d24, #410e09);
 }
 
 .bg_e448e2 {
-	background-image: linear-gradient(0deg, #3C0747, #86189F, #3E054A);
+  background-image: linear-gradient(0deg, #3c0747, #86189f, #3e054a);
 }
 
 .bg_4d82da {
-	background-image: linear-gradient(0deg, #071731, #093680, #071731);
+  background-image: linear-gradient(0deg, #071731, #093680, #071731);
 }
 
 .bg_bdc2c2 {
-	background-image: linear-gradient(0deg, #3D4757, #697A94, #363F4E);
+  background-image: linear-gradient(0deg, #3d4757, #697a94, #363f4e);
 }
 
 .roll-box {
@@ -163,7 +186,7 @@ export default defineComponent({
     .profile {
       display: flex;
       align-items: center;
-      border-bottom: 1px solid rgba(153, 165, 183, .3);
+      border-bottom: 1px solid rgba(153, 165, 183, 0.3);
       margin-bottom: 8px;
       padding: 22px 7px 15px;
 
@@ -197,21 +220,20 @@ export default defineComponent({
       .info {
         .name {
           font-size: 16px;
-          color: #2D2F3D;
+          color: #2d2f3d;
           font-weight: 500;
           margin-bottom: 3px;
         }
 
         .date {
           font-size: 12px;
-          color: #99A5B7;
+          color: #99a5b7;
           font-weight: 500;
         }
       }
     }
 
     .detalis {
-
       .title {
         font-size: 14px;
         font-weight: bold;
@@ -246,7 +268,7 @@ export default defineComponent({
           display: flex;
           align-items: center;
           font-weight: 500;
-          color: #FF9900;
+          color: #ff9900;
 
           img {
             margin-right: 5px;
@@ -254,7 +276,7 @@ export default defineComponent({
         }
 
         .num {
-          color: #4782F5;
+          color: #4782f5;
         }
       }
     }
@@ -269,7 +291,7 @@ export default defineComponent({
       display: block;
       width: 124px;
       height: 32px;
-      background-color: #4782F5;
+      background-color: #4782f5;
       margin: 0 auto;
       color: #fff;
       border-radius: 4px;
@@ -306,28 +328,28 @@ export default defineComponent({
     height: auto;
 
     .roll-list {
-      padding: .7rem 1rem .7rem;
+      padding: 0.7rem 1rem 0.7rem;
       grid-template-columns: repeat(1, 100%);
     }
 
     .roll-item {
       height: auto;
-      padding: 0 .8rem;
+      padding: 0 0.8rem;
 
       .profile {
-        padding: 2.2rem .7rem 1.5rem;
-        
+        padding: 2.2rem 0.7rem 1.5rem;
+
         .avatar {
           margin: 0;
-          margin-right: .5rem;
+          margin-right: 0.5rem;
         }
 
         .info {
           .name {
             font-size: 1.6rem;
-            margin-bottom: .2rem;
+            margin-bottom: 0.2rem;
           }
-          
+
           .date {
             font-size: 1.2rem;
             font-weight: 400;

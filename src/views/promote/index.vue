@@ -141,6 +141,7 @@
           </v-row>
         </div>
       </div>
+
       <div class="mt-6">
         <div v-if="!isMobile" class="d-flex">
           <div class="flex-1 text-white fs24">下线详情</div>
@@ -149,7 +150,100 @@
         <div class="wd-mtitle">
           <span>下线详情</span>
         </div>
-
+        <!-- 新增：Element Plus 过滤查询栏（按新条件优化，确保一行显示） -->
+        <div class="filter-bar flex-nowrap overflow-x-auto pb-2">
+          <!-- 下线名称：窄款 -->
+          <el-input
+            v-model="filterForm.nickname"
+            placeholder="下线名称"
+            size="small"
+            class="filter-item"
+            :style="{
+              backgroundColor: '#2d2f3e',
+              color: '#fff',
+              borderColor: '#444',
+              minWidth: '110px', // 收窄最小宽度
+              width: '110px', // 固定宽度
+            }"
+          />
+          <!-- 充值金额：窄款 -->
+          <el-input
+            v-model="filterForm.recharge"
+            placeholder="充值金额"
+            size="small"
+            type="number"
+            class="filter-item"
+            :style="{
+              backgroundColor: '#2d2f3e',
+              color: '#fff',
+              borderColor: '#444',
+              minWidth: '110px', // 收窄最小宽度
+              width: '110px', // 固定宽度
+            }"
+          />
+          <!-- 日期选择器：加宽（核心调整） -->
+          <el-date-picker
+            v-model="filterForm.registerDate"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="注册开始日"
+            end-placeholder="注册结束日"
+            size="small"
+            class="filter-item"
+            :input-style="{ backgroundColor: '#2d2f3e', color: '#fff' }"
+            :popper-class="['el-date-picker__popper', 'dark-popper']"
+            :style="{
+              minWidth: '260px', // 加宽最小宽度（适配日期区间显示）
+              width: '260px', // 固定宽度，确保足够显示
+            }"
+          />
+          <!-- 贡献返利：窄款 -->
+          <el-input
+            v-model="filterForm.rebate"
+            placeholder="贡献返利"
+            size="small"
+            type="number"
+            class="filter-item"
+            :style="{
+              backgroundColor: '#2d2f3e',
+              color: '#fff',
+              borderColor: '#444',
+              minWidth: '110px', // 收窄最小宽度
+              width: '110px', // 固定宽度
+            }"
+          />
+          <!-- 搜索按钮：窄款 -->
+          <el-button
+            @click="handleSearch"
+            size="small"
+            class="filter-item"
+            style="
+              background-color: #f3a55e;
+              border: none;
+              color: #fff;
+              minwidth: '80px';
+              width: '80px';
+            "
+          >
+            搜索
+          </el-button>
+          <!-- 重置按钮：窄款 -->
+          <el-button
+            @click="handleReset"
+            size="small"
+            class="filter-item"
+            style="
+              background-color: #444;
+              border-color: #666;
+              color: #fff;
+              minwidth: '80px';
+              width: '80px';
+            "
+            type="outline"
+          >
+            重置
+          </el-button>
+        </div>
         <div
           class="mt-6 mb-2 fs14"
           style="color: #ffffff; background-color: rgba(255, 255, 255, 0.1)"
@@ -206,6 +300,14 @@ import QTitle from "@/components/QTitle.vue";
 import useClipboard from "vue-clipboard3";
 const isMobile = computed(() => window.innerWidth < 600);
 const { toClipboard } = useClipboard();
+// 新增：过滤表单数据
+const filterForm = reactive({
+  nickname: "", // 下线名称
+  recharge: "", // 充值金额
+  registerStart: "", // 注册开始日期
+  registerEnd: "", // 注册结束日期
+  rebate: "", // 最小贡献返利
+});
 
 const copyText = async (text) => {
   try {
@@ -278,14 +380,51 @@ const stats = async () => {
 };
 
 const getRecord = async () => {
-  const record = await PromoteService.record({
+  // 构建过滤参数（根据后端接口逻辑调整，以下提供2种常见方案）
+  const filterParams = {
     page: state.page,
     page_size: 10,
-  });
-  console.log(record.data);
-  const { list, total } = record.data.data;
+    nickname: filterForm.nickname.trim(), // 下线名称：模糊匹配
+    // 方案1：充值金额作为精确匹配（输入具体金额）
+    recharge: filterForm.recharge ? Number(filterForm.recharge) : undefined,
+    // 方案2：若后端支持区间，可改为（需前端添加2个输入框，当前按你要求保留单个输入框）
+    // recharge_min: filterForm.rechargeMin ? Number(filterForm.rechargeMin) : undefined,
+    // recharge_max: filterForm.rechargeMax ? Number(filterForm.rechargeMax) : undefined,
+
+    // 注册日期区间（Element Plus daterange 返回 [start, end] 数组）
+    register_start: filterForm.registerDate[0]
+      ? $dayjs(filterForm.registerDate[0]).unix()
+      : undefined,
+    register_end: filterForm.registerDate[1]
+      ? $dayjs(filterForm.registerDate[1]).add(1, "day").unix() // 结束日期+1天，包含当天
+      : undefined,
+
+    // 贡献返利：精确匹配（同充值金额，可根据后端调整为区间）
+    rebate: filterForm.rebate ? Number(filterForm.rebate) : undefined,
+  };
+
+  const recordRes = await PromoteService.record(filterParams);
+  console.log(recordRes.data);
+  const { list, total } = recordRes.data.data;
   state.record = list;
   state.total = total;
+};
+
+// 关键修改：搜索按钮事件（逻辑不变，适配新表单）
+const handleSearch = () => {
+  state.page = 1; // 搜索重置页码
+  getRecord();
+};
+
+// 关键修改：重置按钮事件（适配新表单）
+const handleReset = () => {
+  // 清空过滤表单
+  filterForm.nickname = "";
+  filterForm.recharge = "";
+  filterForm.registerDate = []; // 清空日期区间
+  filterForm.rebate = "";
+  state.page = 1;
+  getRecord();
 };
 
 const onPageChange = (e) => {
@@ -315,6 +454,52 @@ const getLevelSetting = async () => {
 </script>
 
 <style lang="scss" scoped>
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+  /* 桌面端强制一行，超出横向滚动 */
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 2px;
+  }
+}
+
+.filter-item {
+  min-width: 140px; // 调整最小宽度，适配4个输入框+2个按钮
+}
+
+/* Element Plus 日期选择器深色主题适配 */
+.dark-popper {
+  background-color: #2d2f3e !important;
+  border-color: #444 !important;
+  .el-date-picker__header {
+    border-bottom: 1px solid #444 !important;
+  }
+  .el-calendar-table__row {
+    .el-calendar-table__cell {
+      color: #fff !important;
+      &:hover {
+        background-color: #3a3d4a !important;
+      }
+      &.el-calendar-table__cell--current {
+        .el-calendar-table__date {
+          background-color: #f3a55e !important;
+          border-color: #f3a55e !important;
+        }
+      }
+    }
+  }
+  .el-date-range-picker__content {
+    .el-date-range-picker__header {
+      color: #fff !important;
+    }
+  }
+}
 .level-line {
   display: flex;
   color: #666666;
