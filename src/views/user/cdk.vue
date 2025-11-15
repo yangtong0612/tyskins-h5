@@ -179,6 +179,7 @@ import { CdkService } from "@/services/CdkService";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useStore } from "@/store";
 import { useRoute, useRouter } from "vue-router";
+import * as XLSX from "xlsx";
 
 const store = useStore();
 const router = useRouter();
@@ -300,9 +301,38 @@ const goTodDetail = (CdkeyId: Number) => {
 };
 
 //导出功能实现
-const exportCdk = (id : number) =>{
-  
-}
+const exportCdk = async (id: number) => {
+  try {
+    const exportInfo = await CdkService.exportCdK({
+      cdkey_id: id,
+      separator: "|",
+    });
+
+    ElMessage.success("CDK导出成功");
+  } catch (err) {
+    const text = await err;
+    const cdkList = text.split("\n").filter((item) => item.trim());
+
+    // 构建 Excel 数据结构（表头 + 数据行）
+    const excelData = [
+      ["CDK兑换码"], // 表头
+      ...cdkList.map((cdk) => [cdk]), // 每行一个 CDK
+    ];
+
+    // 创建 Excel 工作簿和工作表
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+
+    // 设置列宽（优化显示）
+    worksheet["!cols"] = [{ wch: 30 }]; // CDK 列宽设为 30，适配长字符串
+
+    // 将工作表添加到工作簿
+    XLSX.utils.book_append_sheet(workbook, worksheet, `CDK列表_${id}`);
+
+    // 生成并下载 Excel 文件
+    XLSX.writeFile(workbook, `CDK导出_批次${id}_${new Date().getTime()}.xlsx`);
+  }
+};
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
     "-1": "全部",

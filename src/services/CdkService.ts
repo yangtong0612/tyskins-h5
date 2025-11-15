@@ -34,6 +34,8 @@ export class CdkService {
 			method: 'delete'
 		});
 	}
+
+	//CDK详情
 	static getDetail(params: {
 		page?: number;
 		page_size?: number;
@@ -44,6 +46,17 @@ export class CdkService {
 			params,
 			headers: { Authorization: `Bearer ${localStorage.getItem('token') || ''}` },
 	});
-}
+	}
+	//导出cdk
+	static exportCdK(params:{
+		cdkey_id?:number;
+		separator?:'|'
+	}):Promise<IHttpResponse>{
+		return http(`/api/v2/cdkey/export`,{
+			method:'get',
+			params,
+			headers:{Authorization:`Bearer ${localStorage.getItem('token') || ''}`}
+		})
+	}
 }
 
