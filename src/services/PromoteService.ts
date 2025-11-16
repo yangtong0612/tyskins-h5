@@ -9,10 +9,13 @@ export class PromoteService {
 	static async stat(): Promise<IHttpResponse> {
 		return http('/api/promote/stat', { method: 'get' })
 	}
-
+	// 获得推广记录的接口
 	static async record(params: {
 		page: number,
-		page_size: number
+		page_size: number,
+		start_time: number,
+		end_time:number,
+
 	}): Promise<IHttpResponse> {
 		return http('/api/promote/record', {
 			method: 'get',

@@ -150,9 +150,7 @@
         <div class="wd-mtitle">
           <span>下线详情</span>
         </div>
-        <!-- 新增：Element Plus 过滤查询栏（按新条件优化，确保一行显示） -->
         <div class="filter-bar flex-nowrap overflow-x-auto pb-2">
-          <!-- 下线名称：窄款 -->
           <el-input
             v-model="filterForm.nickname"
             placeholder="下线名称"
@@ -162,11 +160,10 @@
               backgroundColor: '#2d2f3e',
               color: '#fff',
               borderColor: '#444',
-              minWidth: '110px', // 收窄最小宽度
-              width: '110px', // 固定宽度
+              minWidth: '110px',
+              width: '110px',
             }"
           />
-          <!-- 充值金额：窄款 -->
           <el-input
             v-model="filterForm.recharge"
             placeholder="充值金额"
@@ -177,11 +174,10 @@
               backgroundColor: '#2d2f3e',
               color: '#fff',
               borderColor: '#444',
-              minWidth: '110px', // 收窄最小宽度
-              width: '110px', // 固定宽度
+              minWidth: '110px',
+              width: '110px',
             }"
           />
-          <!-- 日期选择器：加宽（核心调整） -->
           <el-date-picker
             v-model="filterForm.registerDate"
             type="daterange"
@@ -208,11 +204,10 @@
               backgroundColor: '#2d2f3e',
               color: '#fff',
               borderColor: '#444',
-              minWidth: '110px', // 收窄最小宽度
-              width: '110px', // 固定宽度
+              minWidth: '110px',
+              width: '110px',
             }"
           />
-          <!-- 搜索按钮：窄款 -->
           <el-button
             @click="handleSearch"
             size="small"
@@ -227,7 +222,6 @@
           >
             搜索
           </el-button>
-          <!-- 重置按钮：窄款 -->
           <el-button
             @click="handleReset"
             size="small"
@@ -298,14 +292,15 @@ import { toast } from "@/composables/util";
 import QTitle from "@/components/QTitle.vue";
 
 import useClipboard from "vue-clipboard3";
+import dayjs from "dayjs";
 const isMobile = computed(() => window.innerWidth < 600);
 const { toClipboard } = useClipboard();
 // 新增：过滤表单数据
 const filterForm = reactive({
   nickname: "", // 下线名称
   recharge: "", // 充值金额
-  registerStart: "", // 注册开始日期
-  registerEnd: "", // 注册结束日期
+  start_time: "", // 注册开始日期
+  end_time: "", // 注册结束日期
   rebate: "", // 最小贡献返利
 });
 
@@ -384,25 +379,17 @@ const getRecord = async () => {
   const filterParams = {
     page: state.page,
     page_size: 10,
-    nickname: filterForm.nickname.trim(), // 下线名称：模糊匹配
-    // 方案1：充值金额作为精确匹配（输入具体金额）
-    recharge: filterForm.recharge ? Number(filterForm.recharge) : undefined,
-    // 方案2：若后端支持区间，可改为（需前端添加2个输入框，当前按你要求保留单个输入框）
-    // recharge_min: filterForm.rechargeMin ? Number(filterForm.rechargeMin) : undefined,
-    // recharge_max: filterForm.rechargeMax ? Number(filterForm.rechargeMax) : undefined,
-
-    // 注册日期区间（Element Plus daterange 返回 [start, end] 数组）
-    register_start: filterForm.registerDate[0]
+    start_time: filterForm.registerDate[0]
       ? $dayjs(filterForm.registerDate[0]).unix()
       : undefined,
-    register_end: filterForm.registerDate[1]
+    end_time: filterForm.registerDate[1]
       ? $dayjs(filterForm.registerDate[1]).add(1, "day").unix() // 结束日期+1天，包含当天
       : undefined,
 
-    // 贡献返利：精确匹配（同充值金额，可根据后端调整为区间）
-    rebate: filterForm.rebate ? Number(filterForm.rebate) : undefined,
+    //贡献返利：精确匹配（同充值金额，可根据后端调整为区间）
+    //rebate: filterForm.rebate ? Number(filterForm.rebate) : undefined,
   };
-
+  debugger;
   const recordRes = await PromoteService.record(filterParams);
   console.log(recordRes.data);
   const { list, total } = recordRes.data.data;

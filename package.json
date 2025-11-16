@@ -14,7 +14,7 @@
     "@mdi/font": "5.9.55",
     "animate.css": "^4.1.1",
     "axios": "^0.27.2",
-    "dayjs": "^1.11.3",
+    "dayjs": "^1.11.19",
     "element-plus": "^2.2.8",
     "lodash": "^4.17.21",
     "mitt": "^3.0.0",
